@@ -16,74 +16,76 @@
                 <field name="completion_rate"/>
                 <templates>
                     <t t-name="kanban-box">
-                        <div class="oe_kanban_card oe_kanban_global_click">
+                        <div class="oe_kanban_card oe_kanban_global_click position-relative">
+                            <div class="ribbon ribbon-top-right" t-if="record.waiting_count.value > 0">
+                                <span class="bg-warning" t-esc="record.waiting_count.value + ' Waiting'"/>
+                            </div>
                             <div class="oe_kanban_content">
                                 <div class="row">
-                                    <div class="col-12 mb-2">
-                                        <strong class="text-primary">
-                                            <field name="name"/>
-                                        </strong>
+                                    <div class="col-12 mb-3">
+                                        <h3 class="mt-0 mb-0">
+                                            <field name="name" class="text-primary"/>
+                                        </h3>
+                                        <small class="text-muted" t-esc="record.code.value"/>
                                     </div>
-                                    <div class="col-6">
-                                        <strong>Today's Status</strong>
-                                        <div class="row mt16">
-                                            <div class="col-6 text-center">
-                                                <span class="o_value h4" t-esc="record.today_appointment_count.value"/>
-                                                <br/>
-                                                <span class="text-muted">Appointments</span>
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="d-flex justify-content-around mb-3">
+                                            <div class="text-center px-2 border-end">
+                                                <div class="h2 mb-0 text-primary" t-esc="record.today_appointment_count.value"/>
+                                                <div class="text-muted small">Today</div>
                                             </div>
-                                            <div class="col-6 text-center">
-                                                <span class="o_value h4 text-success" t-esc="record.appointment_count.value"/>
-                                                <br/>
-                                                <span class="text-muted">Completed</span>
+                                            <div class="text-center px-2 border-end">
+                                                <div class="h2 mb-0 text-success" t-esc="record.appointment_count.value"/>
+                                                <div class="text-muted small">Total</div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 mt-3">
-                                        <div class="progress" style="height: 5px;">
-                                            <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.completion_rate.value}%;" 
-                                                 t-attf-aria-valuenow="#{record.completion_rate.value}" aria-valuemin="0" aria-valuemax="100"/>
+                                            <div class="text-center px-2">
+                                                <div class="h2 mb-0" t-attf-class="text-#{record.completion_rate.value >= 70 and 'success' or (record.completion_rate.value >= 30 and 'warning' or 'danger')}" t-esc="Math.round(record.completion_rate.value) + '%'"/>
+                                                <div class="text-muted small">Complete</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
-                                    <div class="row">
-                                        <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
-                                            <div class="o_kanban_card_manage_title">
-                                                <span>Actions</span>
-                                            </div>
-                                            <div>
-                                                <a role="menuitem" type="object" name="action_view_appointments">View Appointments</a>
-                                            </div>
-                                            <div>
-                                                <a role="menuitem" type="object" name="action_view_patients">View Patients</a>
-                                            </div>
-                                            <div>
-                                                <a role="menuitem" type="object" name="action_department_stats">Department Stats</a>
-                                            </div>
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <div class="progress" style="height: 4px;">
+                                            <div class="progress-bar" t-attf-class="bg-#{record.completion_rate.value >= 70 and 'success' or (record.completion_rate.value >= 30 and 'warning' or 'danger')}"
+                                                 role="progressbar" t-attf-style="width: #{record.completion_rate.value}%;" 
+                                                 t-attf-aria-valuenow="#{record.completion_rate.value}" 
+                                                 aria-valuemin="0" aria-valuemax="100"/>
                                         </div>
-                                        <div class="col-6 o_kanban_card_manage_section o_kanban_manage_reports">
-                                            <div class="o_kanban_card_manage_title">
-                                                <span>Reports</span>
-                                            </div>
-                                            <div>
-                                                <a role="menuitem" type="object" name="action_department_report">Department Report</a>
-                                            </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="btn-group d-flex" role="group">
+                                            <button type="object" name="action_view_today_appointments" 
+                                                    class="btn btn-outline-primary">
+                                                <i class="fa fa-calendar me-1"/>Today
+                                            </button>
+                                            <button type="object" name="action_department_stats" 
+                                                    class="btn btn-outline-primary">
+                                                <i class="fa fa-bar-chart me-1"/>Stats
+                                            </button>
+                                            <button type="object" name="action_department_report" 
+                                                    class="btn btn-outline-primary">
+                                                <i class="fa fa-file-text me-1"/>Report
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="o_kanban_card_footer mt-3">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <span t-if="record.waiting_count.value > 0" class="badge badge-warning" 
-                                              t-esc="record.waiting_count.value + ' Waiting'"/>
-                                    </div>
-                                    <div class="col-6 text-right">
-                                        <button class="btn btn-primary btn-sm" name="action_view_today_appointments" type="object">
-                                            Today's Schedule
-                                        </button>
-                                    </div>
+                            <div class="o_dropdown_kanban dropdown position-absolute top-0 end-0 m-2">
+                                <a role="button" class="dropdown-toggle o-no-caret btn" data-bs-toggle="dropdown" data-bs-display="static" href="#" aria-label="Dropdown menu" title="Dropdown menu">
+                                    <span class="fa fa-ellipsis-v"/>
+                                </a>
+                                <div class="dropdown-menu" role="menu">
+                                    <a role="menuitem" name="action_view_appointments" type="object" class="dropdown-item">View All Appointments</a>
+                                    <a role="menuitem" name="action_view_today_appointments" type="object" class="dropdown-item">View Today's Schedule</a>
+                                    <div class="dropdown-divider"/>
+                                    <a role="menuitem" name="action_department_stats" type="object" class="dropdown-item">Department Statistics</a>
+                                    <a role="menuitem" name="action_department_report" type="object" class="dropdown-item">Department Report</a>
                                 </div>
                             </div>
                         </div>

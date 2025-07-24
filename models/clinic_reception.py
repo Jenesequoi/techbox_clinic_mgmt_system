@@ -22,6 +22,13 @@ class ClinicReception(models.Model):
     age = fields.Integer(string='Age', compute='_compute_age', tracking=True)
     department_id = fields.Many2one('clinic.department', string='Department', required=True)
     service = fields.Char(related='department_id.code', store=True, string='Service Code')
+    complaint = fields.Text(string='Complaint', required=True)
+    payment_method = fields.Selection([
+        ('cash', 'Cash'),
+        ('card', 'Card'),
+        ('mobile', 'M-Pesa'),
+        ('insurance', 'Insurance')
+    ], string='Payment Method', required=True)
 
     @api.model_create_multi
     def create(self, vals_list):

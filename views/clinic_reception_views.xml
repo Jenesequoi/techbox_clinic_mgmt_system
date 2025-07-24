@@ -35,6 +35,11 @@
                                readonly="state not in ('waiting', 'in_progress')"/>
                         <field name="is_married" readonly="state not in ('waiting', 'in_progress')"/>
                         <field name="spouse" invisible="not is_married" />
+                        <field name="complaint" placeholder="Enter patient's complaint" 
+                               readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="payment_method" 
+                               placeholder="Select payment method"
+                               readonly="state not in ('waiting', 'in_progress')"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
@@ -73,6 +78,8 @@
                 <field name="guardian" optional="hide"/>
                 <field name="is_married" widget="boolean_toggle" optional="hide"/>
                 <field name="spouse" optional="hide"/>
+                <field name="complaint" optional="hide"/>
+                <field name="payment_method" optional="hide"/>
             </tree>
         </field>
     </record>
