@@ -35,9 +35,9 @@
     <menuitem 
         id="clinic_departments_menu" 
         name="Departments"
-        parent="clinic_operations_menu"
-        action="clinic_dashboard_action"
-        sequence="2"/>
+        parent="clinic_configuration_menu"
+        action="action_clinic_department"
+        sequence="1"/>
 
     <!-- Configuration Menu -->
     <menuitem
