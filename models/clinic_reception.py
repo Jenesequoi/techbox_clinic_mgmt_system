@@ -25,4 +25,4 @@ class ClinicReception(models.Model):
     referral_id = fields.Many2one('res.partner', string='Referral Doctor')
     guardian = fields.Many2one('res.partner', string='Guardian')
     is_married = fields.Boolean(string='Is Married', default=False)
-    spouse = fields.Many2one('res.partner', string='Spouse')
+    spouse = fields.Many2one('res.partner', string='Spouse', tracking=True)
