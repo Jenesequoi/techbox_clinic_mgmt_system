@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <menuitem
+        id="clinic_root_menu"
+        name="Clinic Management"
+        groups="base.group_user"
+        sequence="10">
+        <menuitem id="clinic_reception_menu" name="Clinic Reception" action="clinic_reception_action"/>
+    </menuitem>
+</odoo>
