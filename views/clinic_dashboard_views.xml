@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Kanban View -->
+    <!-- Department Kanban View -->
+    <record id="view_clinic_department_kanban" model="ir.ui.view">
+        <field name="name">clinic.department.kanban</field>
+        <field name="model">clinic.department</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard" create="0">
+                <field name="id"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="appointment_count"/>
+                <field name="today_appointment_count"/>
+                <field name="waiting_count"/>
+                <field name="completion_rate"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="oe_kanban_content">
+                                <div class="row">
+                                    <div class="col-12 mb-2">
+                                        <strong class="text-primary">
+                                            <field name="name"/>
+                                        </strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <strong>Today's Status</strong>
+                                        <div class="row mt16">
+                                            <div class="col-6 text-center">
+                                                <span class="o_value h4" t-esc="record.today_appointment_count.value"/>
+                                                <br/>
+                                                <span class="text-muted">Appointments</span>
+                                            </div>
+                                            <div class="col-6 text-center">
+                                                <span class="o_value h4 text-success" t-esc="record.appointment_count.value"/>
+                                                <br/>
+                                                <span class="text-muted">Completed</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-3">
+                                        <div class="progress" style="height: 5px;">
+                                            <div class="progress-bar" role="progressbar" t-attf-style="width: #{record.completion_rate.value}%;" 
+                                                 t-attf-aria-valuenow="#{record.completion_rate.value}" aria-valuemin="0" aria-valuemax="100"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                    <div class="row">
+                                        <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
+                                            <div class="o_kanban_card_manage_title">
+                                                <span>Actions</span>
+                                            </div>
+                                            <div>
+                                                <a role="menuitem" type="object" name="action_view_appointments">View Appointments</a>
+                                            </div>
+                                            <div>
+                                                <a role="menuitem" type="object" name="action_view_patients">View Patients</a>
+                                            </div>
+                                            <div>
+                                                <a role="menuitem" type="object" name="action_department_stats">Department Stats</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 o_kanban_card_manage_section o_kanban_manage_reports">
+                                            <div class="o_kanban_card_manage_title">
+                                                <span>Reports</span>
+                                            </div>
+                                            <div>
+                                                <a role="menuitem" type="object" name="action_department_report">Department Report</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_footer mt-3">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <span t-if="record.waiting_count.value > 0" class="badge badge-warning" 
+                                              t-esc="record.waiting_count.value + ' Waiting'"/>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <button class="btn btn-primary btn-sm" name="action_view_today_appointments" type="object">
+                                            Today's Schedule
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Graph View -->
+    <record id="view_clinic_dashboard_graph" model="ir.ui.view">
+        <field name="name">clinic.dashboard.graph</field>
+        <field name="model">clinic.reception</field>
+        <field name="arch" type="xml">
+            <graph string="Clinic Analytics" type="bar">
+                <field name="service" type="row"/>
+                <field name="date" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_clinic_dashboard_search" model="ir.ui.view">
+        <field name="name">clinic.dashboard.search</field>
+        <field name="model">clinic.reception</field>
+        <field name="arch" type="xml">
+            <search string="Search Clinic Data">
+                <field name="patient_name"/>
+                <field name="service"/>
+                <filter string="Today" name="today" domain="[('date', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="This Week" name="this_week" domain="[('date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="this_month" domain="[('date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Service" name="group_service" context="{'group_by': 'service'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Dashboard Action -->
+    <record id="clinic_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Clinic Dashboard</field>
+        <field name="res_model">clinic.department</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_clinic_department_kanban"/>
+        <field name="target">main</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                All departments are displayed here.
+            </p>
+            <p>
+                Each department shows its current appointments and statistics.
+            </p>
+        </field>
+    </record>
+</odoo>
