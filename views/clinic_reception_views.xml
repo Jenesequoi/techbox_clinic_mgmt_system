@@ -6,19 +6,40 @@
         <field name="model">clinic.reception</field>
         <field name="arch" type="xml">
             <form string="Clinic Reception">
+                <header>
+                    <button name="action_start" string="Start" type="object" 
+                            class="btn-primary" invisible="state != 'waiting'"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            class="btn-primary" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state in ('completed', 'cancelled')"/>
+                    <button name="action_reset" string="Reset to Waiting" type="object" 
+                            invisible="state not in ('cancelled', 'completed')"/>
+                    <field name="state" widget="statusbar" 
+                           options="{'clickable': '1'}" 
+                           statusbar_visible="waiting,in_progress,completed"/>
+                </header>
                 <sheet>
                     <group>
-                        <field name="ref" />
-                        <field name="date" />
-                        <field name="patient_name" />
-                        <field name="dob" />
-                        <field name="age" />
-                        <field name="service" />
+                        <field name="ref" placeholder="Auto-generated" readonly="1"/>
+                        <field name="date" readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="patient_name" readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="dob" readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="age" readonly="1"/>
+                        <field name="department_id" readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="service" readonly="1"/>
                         <field name="is_referral" />
-                        <field name="referral_id" invisible="not is_referral" />
-                        <field name="guardian" invisible="age >= 18" />
-                        <field name="is_married" />
+                        <field name="referral_id" invisible="not is_referral" 
+                               readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="guardian" invisible="age >= 18" 
+                               readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="is_married" readonly="state not in ('waiting', 'in_progress')"/>
                         <field name="spouse" invisible="not is_married" />
+                        <field name="complaint" placeholder="Enter patient's complaint" 
+                               readonly="state not in ('waiting', 'in_progress')"/>
+                        <field name="payment_method" 
+                               placeholder="Select payment method"
+                               readonly="state not in ('waiting', 'in_progress')"/>
                     </group>
                 </sheet>
                 <div class="oe_chatter">
@@ -35,19 +56,75 @@
         <field name="name">clinic.reception.view.tree</field>
         <field name="model">clinic.reception</field>
         <field name="arch" type="xml">
-            <tree string="Clinic Reception">
-                <field name="ref" />
-                <field name="date" />
-                <field name="patient_name" />
-                <field name="dob" />
-                <field name="age" />
-                <field name="service" />
-                <field name="is_referral" />
-                <field name="referral_id" />
-                <field name="guardian" />
-                <field name="is_married" />
-                <field name="spouse" />
+            <tree string="Clinic Reception" 
+                  decoration-primary="state == 'waiting'"
+                  decoration-warning="state == 'in_progress'"
+                  decoration-success="state == 'completed'"
+                  decoration-muted="state == 'cancelled'"
+                  sample="1">
+                <field name="ref" decoration-bf="1"/>
+                <field name="date"/>
+                <field name="patient_name"/>
+                <field name="state" widget="badge" 
+                       decoration-primary="state == 'waiting'"
+                       decoration-warning="state == 'in_progress'"
+                       decoration-success="state == 'completed'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="department_id"/>
+                <field name="service"/>
+                <field name="age"/>
+                <field name="is_referral" widget="boolean_toggle"/>
+                <field name="referral_id" optional="show"/>
+                <field name="guardian" optional="hide"/>
+                <field name="is_married" widget="boolean_toggle" optional="hide"/>
+                <field name="spouse" optional="hide"/>
+                <field name="complaint" optional="hide"/>
+                <field name="payment_method" optional="hide"/>
             </tree>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_clinic_reception_search" model="ir.ui.view">
+        <field name="name">clinic.reception.search</field>
+        <field name="model">clinic.reception</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="ref" filter_domain="['|', ('ref', 'ilike', self), ('patient_name', 'ilike', self)]"/>
+                <field name="patient_name"/>
+                <field name="department_id"/>
+                <separator/>
+                <filter name="my_appointments" string="My Appointments" 
+                        domain="[('create_uid', '=', uid)]"/>
+                <separator/>
+                <filter name="waiting" string="Waiting" 
+                        domain="[('state', '=', 'waiting')]"/>
+                <filter name="in_progress" string="In Progress" 
+                        domain="[('state', '=', 'in_progress')]"/>
+                <filter name="completed" string="Completed" 
+                        domain="[('state', '=', 'completed')]"/>
+                <filter name="cancelled" string="Cancelled" 
+                        domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="today" string="Today" 
+                        domain="[('date', '=', context_today())]"/>
+                <filter name="week" string="This Week" 
+                        domain="[('date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="month" string="This Month" 
+                        domain="[('date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+                <searchpanel>
+                    <field name="department_id" enable_counters="1" expand="1"/>
+                    <field name="state" enable_counters="1" expand="1"/>
+                </searchpanel>
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" 
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Department" name="group_by_department" 
+                            context="{'group_by': 'department_id'}"/>
+                    <filter string="Date" name="group_by_date" 
+                            context="{'group_by': 'date:day'}"/>
+                </group>
+            </search>
         </field>
     </record>
 
@@ -56,8 +133,8 @@
         <field name="name">Clinic Reception</field>
         <field name="res_model">clinic.reception</field>
         <field name="view_mode">tree,form</field>
-        <field name="domain">[]</field>
-        <field name="context">{}</field>
+        <field name="search_view_id" ref="view_clinic_reception_search"/>
+        <field name="context">{'search_default_today': 1, 'search_default_group_by_state': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first clinic reception record.
