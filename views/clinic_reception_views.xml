@@ -21,7 +21,7 @@
                 </header>
                 <sheet>
                     <group>
-                        <field name="ref" placeholder="Auto-generated" readonly="state != 'waiting'"/>
+                        <field name="ref" placeholder="Auto-generated" readonly="1"/>
                         <field name="date" readonly="state not in ('waiting', 'in_progress')"/>
                         <field name="patient_name" readonly="state not in ('waiting', 'in_progress')"/>
                         <field name="dob" readonly="state not in ('waiting', 'in_progress')"/>

@@ -15,7 +15,7 @@ class ClinicReception(models.Model):
     completion_rate = fields.Float(compute='_compute_appointment_stats')
 
 
-    ref = fields.Char(string='Visit ID', readonly=True, copy=False, default='/')
+    ref = fields.Char(string='Visit ID', readonly=True, copy=False)
     date = fields.Date(string='Date', required=True, default=fields.Date.context_today)
     patient_name = fields.Many2one('res.partner', string='Patient', required=True)
     dob = fields.Date(string='Date of Birth', required=True)
