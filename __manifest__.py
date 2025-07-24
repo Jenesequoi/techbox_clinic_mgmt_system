@@ -13,6 +13,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/clinic_reception_views.xml',
+        'views/clinic_dashboard_views.xml',
         'views/menus.xml',
     ],
     'auto_install': False,
