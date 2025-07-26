@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <record id="view_clinic_consultancy_form" model="ir.ui.view">
+    <field name="name">clinic.consultancy.form</field>
+    <field name="model">clinic.consultancy</field>
+    <field name="arch" type="xml">
+      <form string="Clinic Consultancy">
+        <sheet>
+          <group>
+            <field name="ref" readonly="1"/>
+            <field name="consultation_date"/>
+            <field name="patient_id"/>
+            <field name="dob"/>
+            <field name="age" readonly="1"/>
+            <field name="consulting_doctor"/>
+            <field name="diagnosis"/>
+            <field name="notes"/>
+            <field name="follow_up_date"/>
+            <field name="is_referral"/>
+            <field name="referred_by" attrs="{'invisible': [('is_referral','=',False)]}"/>
+            <field name="guardian"/>
+            <field name="is_married"/>
+            <field name="spouse" attrs="{'invisible': [('is_married','=',False)]}"/>
+          </group>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="view_clinic_consultancy_tree" model="ir.ui.view">
+    <field name="name">clinic.consultancy.tree</field>
+    <field name="model">clinic.consultancy</field>
+    <field name="arch" type="xml">
+      <tree string="Clinic Consultancies">
+        <field name="ref"/>
+        <field name="consultation_date"/>
+        <field name="patient_id"/>
+        <field name="consulting_doctor"/>
+        <field name="follow_up_date"/>
+        <field name="is_referral"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="action_clinic_consultancy" model="ir.actions.act_window">
+    <field name="name">Clinic Consultancy</field>
+    <field name="res_model">clinic.consultancy</field>
+    <field name="view_mode">tree,form</field>
+    <field name="help" type="html">
+      <p class="o_view_nocontent_smiling_face">
+        Create your first consultation record
+      </p>
+    </field>
+  </record>
+
+  <!-- Menu item under an existing menu -->
+  <menuitem id="menu_clinic_consultancy"
+            name="Consultancy"
+            parent="menu_clinic_root"
+            action="action_clinic_consultancy"
+            sequence="20"/>
+</odoo>

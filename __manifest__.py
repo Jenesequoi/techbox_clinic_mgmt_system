@@ -10,9 +10,11 @@
         'base', 
         'mail', 
     ],
-    'data': [
+     'data': [
         'security/ir.model.access.csv',
         'views/clinic_reception_views.xml',
+        'views/clinic_consultancy_views.xml',     # 🆕 New Consultancy View File
+        'data/clinic_consultancy_sequence.xml',   # 🆕 Sequence for Consultancy Ref Field
         'views/menus.xml',
     ],
     'auto_install': False,
