@@ -1,0 +1,26 @@
+<!-- Filename: views/pharmacy_queue_views.xml -->
+
+<odoo>
+    <record id="view_pharmacy_queue_tree" model="ir.ui.view">
+        <field name="name">pharmacy.queue.tree</field>
+        <field name="model">pharmacy.queue</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="prescription_id"/>
+                <field name="doctor_id"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_pharmacy_queue" model="ir.actions.act_window">
+        <field name="name">Pharmacy Queue</field>
+        <field name="res_model">pharmacy.queue</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_pharmacy_root" name="Pharmacy" sequence="10"/>
+    <menuitem id="menu_pharmacy_queue" name="Queue" parent="menu_pharmacy_root" action="action_pharmacy_queue"/>
+</odoo>

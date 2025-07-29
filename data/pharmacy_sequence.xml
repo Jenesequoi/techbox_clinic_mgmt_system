@@ -1,0 +1,12 @@
+<!-- Filename: data/pharmacy_sequence.xml -->
+
+<odoo>
+    <data noupdate="1">
+        <record id="seq_pharmacy_queue" model="ir.sequence">
+            <field name="name">Pharmacy Queue</field>
+            <field name="code">pharmacy.queue</field>
+            <field name="prefix">PQ/</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>
