@@ -50,8 +50,10 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <menuitem id="menu_pharmacy_root" name="Pharmacy"/>
+    <!-- Replaces menu_pharmacy_root with submenu under Clinic -->
+    <menuitem id="menu_clinic_pharmacy_root" name="Pharmacy" parent="clinic_root_menu" sequence="20"/>
+    
     <menuitem id="menu_pharmacy_prescription" name="Prescriptions"
-              parent="menu_pharmacy_root"
+              parent="menu_clinic_pharmacy_root"
               action="action_clinic_prescription"/>
 </odoo>

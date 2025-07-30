@@ -35,6 +35,6 @@
 
     <menuitem id="menu_pharmacy_dispense"
               name="Dispensing Log"
-              parent="menu_pharmacy_root"
+              parent="menu_clinic_pharmacy_root"
               action="action_pharmacy_dispense"/>
 </odoo>
