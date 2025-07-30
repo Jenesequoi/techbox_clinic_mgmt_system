@@ -1,5 +1,3 @@
-# Add this to the prescription model, e.g., models/clinic_prescription.py
-
 def action_confirm(self):
     # existing logic
     for record in self:

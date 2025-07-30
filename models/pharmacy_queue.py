@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-# Filename: models/pharmacy_queue.py
-
 from odoo import models, fields, api
 
 class PharmacyQueue(models.Model):
