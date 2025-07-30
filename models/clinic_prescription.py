@@ -1,9 +1,84 @@
-def action_confirm(self):
-    # existing logic
-    for record in self:
-        self.env['pharmacy.queue'].create({
-            'patient_id': record.patient_id.id,
-            'prescription_id': record.id,
-            'doctor_id': record.doctor_id.id,
-        })
-    return True
+# Filename: clinic_prescription.py
+from odoo import models, fields, api, _
+
+
+class ClinicReception(models.Model):
+    _name = 'clinic.reception'
+    _description = 'Clinic Reception'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
+    _order = 'date desc'
+
+    ref = fields.Char(string='Visit ID', required=True, copy=False)
+    date = fields.Date(string='Date', required=True, default=fields.Date.context_today)
+    patient_name = fields.Many2one('res.partner', string='Patient', required=True)
+    dob = fields.Date(string='Date of Birth', required=True)
+    age = fields.Integer(string='Age', store=True, tracking=True)
+    service = fields.Selection([
+        ('consultation', 'Consultation'),
+        ('mch', 'MCH'),
+        ('pharmacy', 'Pharmacy'),
+        ('laboratory', 'Laboratory'),
+        ('imaging', 'Imaging')
+    ], string='Outpatient Service', required=True)
+    is_referral = fields.Boolean(string='Is Referral', default=False)
+    referral_id = fields.Many2one('res.partner', string='Referral Doctor')
+    guardian = fields.Many2one('res.partner', string='Guardian')
+    is_married = fields.Boolean(string='Is Married', default=False)
+    spouse = fields.Many2one('res.partner', string='Spouse', tracking=True)
+
+
+class ClinicPrescription(models.Model):
+    _name = 'clinic.prescription'
+    _description = 'Clinic Prescription'
+
+    name = fields.Char(string='Prescription ID', required=True, default='New', readonly=True, copy=False)
+    patient_id = fields.Many2one('res.partner', string='Patient', required=True)
+    doctor_id = fields.Many2one('res.users', string='Doctor', required=True)
+    line_ids = fields.One2many('clinic.prescription.line', 'prescription_id', string='Medications')
+
+    verification_status = fields.Selection([
+        ('pending', 'Pending Verification'),
+        ('approved', 'Approved'),
+        ('flagged', 'Flagged for Review')
+    ], default='pending', string='Verification Status')
+
+    verified_by = fields.Many2one('res.users', string='Verified By', readonly=True)
+    verification_date = fields.Datetime(string='Verified On', readonly=True)
+    has_expired_drugs = fields.Boolean(string='Has Expired Drugs', compute='_compute_expiry_warning')
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('clinic.prescription') or 'New'
+        return super().create(vals)
+
+    @api.depends('line_ids.expiry_date')
+    def _compute_expiry_warning(self):
+        for rec in self:
+            rec.has_expired_drugs = any(
+                line.expiry_date and line.expiry_date < fields.Date.today() for line in rec.line_ids
+            )
+
+    def action_approve_dispense(self):
+        for rec in self:
+            rec.verification_status = 'approved'
+            rec.verified_by = self.env.user
+            rec.verification_date = fields.Datetime.now()
+
+    def action_flag_issue(self):
+        for rec in self:
+            rec.verification_status = 'flagged'
+            rec.verified_by = self.env.user
+            rec.verification_date = fields.Datetime.now()
+
+
+class ClinicPrescriptionLine(models.Model):
+    _name = 'clinic.prescription.line'
+    _description = 'Prescription Medication Line'
+
+    prescription_id = fields.Many2one('clinic.prescription', string='Prescription', required=True, ondelete='cascade')
+    medication = fields.Char(string='Medication', required=True)
+    dosage = fields.Char(string='Dosage')
+    instructions = fields.Text(string='Instructions')
+    availability = fields.Boolean(string='Available', default=True)
+    expiry_date = fields.Date(string='Expiry Date')

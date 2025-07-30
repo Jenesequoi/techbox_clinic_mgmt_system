@@ -1,0 +1,57 @@
+<odoo>
+    <record id="view_clinic_prescription_form" model="ir.ui.view">
+        <field name="name">clinic.prescription.form</field>
+        <field name="model">clinic.prescription</field>
+        <field name="arch" type="xml">
+            <form string="Prescription">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="patient_id"/>
+                        <field name="doctor_id"/>
+                        <field name="verification_status"/>
+                        <field name="verified_by"/>
+                        <field name="verification_date"/>
+                        <field name="has_expired_drugs" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Medications">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="medication"/>
+                                    <field name="dosage"/>
+                                    <field name="instructions"/>
+                                    <field name="availability"/>
+                                    <field name="expiry_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="action_approve_dispense"
+                                type="object"
+                                string="Approve &amp; Dispense"
+                                class="btn btn-primary"
+                                context="{'invisible_if_status_not_pending': True}"/>
+                        <button name="action_flag_issue"
+                                type="object"
+                                string="Flag Issue"
+                                class="btn btn-danger"
+                                context="{'invisible_if_status_not_pending': True}"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_clinic_prescription" model="ir.actions.act_window">
+        <field name="name">Prescriptions</field>
+        <field name="res_model">clinic.prescription</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_pharmacy_root" name="Pharmacy"/>
+    <menuitem id="menu_pharmacy_prescription" name="Prescriptions"
+              parent="menu_pharmacy_root"
+              action="action_clinic_prescription"/>
+</odoo>
