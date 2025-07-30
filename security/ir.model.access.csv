@@ -3,3 +3,5 @@ access_clinic_reception_user,access.clinic.reception.user,model_clinic_reception
 access_pharmacy_queue,access.pharmacy.queue,model_pharmacy_queue,base.group_user,1,1,1,0
 access_clinic_prescription_user,access.clinic.prescription.user,model_clinic_prescription,base.group_user,1,1,1,0
 access_clinic_prescription_line_user,access.clinic.prescription.line.user,model_clinic_prescription_line,base.group_user,1,1,1,0
+access_pharmacy_dispense,access.pharmacy.dispense,model_pharmacy_dispense,base.group_user,1,1,1,0
+access_pharmacy_dispense_line,access.pharmacy.dispense.line,model_pharmacy_dispense_line,base.group_user,1,1,1,0
