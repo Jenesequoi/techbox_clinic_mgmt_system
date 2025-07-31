@@ -12,10 +12,11 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'data/ir_sequence_data.xml',  # ✅ Renamed and added here
         'views/clinic_reception_views.xml',
         'views/clinic_prescription_views.xml',
         'views/pharmacy_dispense_views.xml',
-        'views/pharmacy_queue_views.xml',  # ✅ Placed before menus
+        'views/pharmacy_queue_views.xml',
         'views/menus.xml',
     ],
     'auto_install': False,
