@@ -12,12 +12,16 @@
     ],
     'data': [
         'security/ir.model.access.csv',
-        'data/ir_sequence_data.xml',  # ✅ Renamed and added here
+        'data/ir_sequence_data.xml',
+
+        # ✅ Load this FIRST to prevent menu reference errors
+        'views/menus.xml',
+
+        # Other views that depend on menus
         'views/clinic_reception_views.xml',
         'views/clinic_prescription_views.xml',
         'views/pharmacy_dispense_views.xml',
         'views/pharmacy_queue_views.xml',
-        'views/menus.xml',
     ],
     'auto_install': False,
     'application': True,

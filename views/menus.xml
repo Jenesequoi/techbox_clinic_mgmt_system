@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- Root Menu -->
     <menuitem 
         id="clinic_root_menu"
         name="Clinic Management"
         groups="base.group_user"
-        sequence="10" />
+        sequence="10"/>
 
+    <!-- Clinic Reception Submenu -->
     <menuitem 
         id="clinic_reception_menu"
         name="Clinic Reception"
         parent="clinic_root_menu"
         action="clinic_reception_action"
-        sequence="10" />
+        sequence="10"/>
 
+    <!-- Pharmacy Root -->
     <menuitem 
         id="menu_clinic_pharmacy_root"
         name="Pharmacy"
         parent="clinic_root_menu"
-        sequence="20" />
+        sequence="20"/>
 
+    <!-- Pharmacy Submenus -->
     <menuitem 
         id="menu_pharmacy_prescription"
         name="Prescriptions"
         parent="menu_clinic_pharmacy_root"
         action="action_clinic_prescription"
-        sequence="10" />
+        sequence="10"/>
 
     <menuitem 
         id="menu_pharmacy_dispense"
         name="Dispensing Log"
         parent="menu_clinic_pharmacy_root"
         action="action_pharmacy_dispense"
-        sequence="20" />
+        sequence="20"/>
 
     <menuitem 
         id="menu_pharmacy_queue"
         name="Queue"
         parent="menu_clinic_pharmacy_root"
         action="action_pharmacy_queue"
-        sequence="30" />
+        sequence="30"/>
 </odoo>
