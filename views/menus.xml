@@ -33,4 +33,10 @@
         action="action_pharmacy_dispense"
         sequence="20" />
 
+    <menuitem 
+        id="menu_pharmacy_queue"
+        name="Queue"
+        parent="menu_clinic_pharmacy_root"
+        action="action_pharmacy_queue"
+        sequence="30" />
 </odoo>

@@ -15,6 +15,7 @@
         'views/clinic_reception_views.xml',
         'views/clinic_prescription_views.xml',
         'views/pharmacy_dispense_views.xml',
+        'views/pharmacy_queue_views.xml',  # ✅ Placed before menus
         'views/menus.xml',
     ],
     'auto_install': False,
