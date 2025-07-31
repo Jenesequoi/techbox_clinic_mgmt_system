@@ -5,6 +5,18 @@
         <field name="arch" type="xml">
             <form string="Prescription">
                 <sheet>
+                    <header>
+                        <button name="action_approve_dispense"
+                                type="object"
+                                string="Approve &amp; Dispense"
+                                class="btn btn-primary"
+                                context="{'invisible_if_status_not_pending': True}"/>
+                        <button name="action_flag_issue"
+                                type="object"
+                                string="Flag Issue"
+                                class="btn btn-danger"
+                                context="{'invisible_if_status_not_pending': True}"/>
+                    </header>
                     <group>
                         <field name="name"/>
                         <field name="patient_id"/>
@@ -27,18 +39,6 @@
                             </field>
                         </page>
                     </notebook>
-                    <footer>
-                        <button name="action_approve_dispense"
-                                type="object"
-                                string="Approve &amp; Dispense"
-                                class="btn btn-primary"
-                                context="{'invisible_if_status_not_pending': True}"/>
-                        <button name="action_flag_issue"
-                                type="object"
-                                string="Flag Issue"
-                                class="btn btn-danger"
-                                context="{'invisible_if_status_not_pending': True}"/>
-                    </footer>
                 </sheet>
             </form>
         </field>
@@ -49,5 +49,4 @@
         <field name="res_model">clinic.prescription</field>
         <field name="view_mode">tree,form</field>
     </record>
-
 </odoo>
