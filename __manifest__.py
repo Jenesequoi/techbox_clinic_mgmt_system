@@ -7,13 +7,24 @@
     'license': 'LGPL-3',
     'category': 'Healthcare',
     'depends': [
-        'base', 
-        'mail', 
+        'base',
+        'mail',
+        'product',  # ✅ Added to resolve '_unknown' model reference
     ],
     'data': [
         'security/ir.model.access.csv',
-        'views/clinic_reception_views.xml',
+        'data/ir_sequence_data.xml',
+
+        # Views that define actions BEFORE menus
+        'views/pharmacy_dispense_views.xml',
+
+        # Menus referencing actions
         'views/menus.xml',
+
+        # Other views
+        'views/clinic_reception_views.xml',
+        'views/clinic_prescription_views.xml',
+        'views/pharmacy_queue_views.xml',
     ],
     'auto_install': False,
     'application': True,
