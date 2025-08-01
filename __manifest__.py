@@ -9,18 +9,21 @@
     'depends': [
         'base',
         'mail',
+        'product',  # ✅ Added to resolve '_unknown' model reference
     ],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_data.xml',
 
-        # ✅ Load this FIRST to prevent menu reference errors
+        # Views that define actions BEFORE menus
+        'views/pharmacy_dispense_views.xml',
+
+        # Menus referencing actions
         'views/menus.xml',
 
-        # Other views that depend on menus
+        # Other views
         'views/clinic_reception_views.xml',
         'views/clinic_prescription_views.xml',
-        'views/pharmacy_dispense_views.xml',
         'views/pharmacy_queue_views.xml',
     ],
     'auto_install': False,
