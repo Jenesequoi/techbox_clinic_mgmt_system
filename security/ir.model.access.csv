@@ -1,2 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_clinic_reception_user,access_clinic_reception,model_clinic_reception,base.group_user,1,1,1,1
+access_clinic_reception,clinic.reception,model_clinic_reception,base.group_user,1,1,1,1
