@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- Root Menu -->
     <menuitem
         id="clinic_root_menu"
         name="Clinic Management"
         groups="base.group_user"
         sequence="10">
-        <menuitem id="clinic_reception_menu" name="Clinic Reception" action="clinic_reception_action"/>
+
+        <!-- Dashboard Menu - First item -->
+        <menuitem
+            id="clinic_dashboard_menu"
+            name="Dashboard"
+            action="clinic_dashboard_action"
+            sequence="1" />
+
+        <!-- Reception Menu -->
+        <menuitem
+            id="clinic_reception_menu"
+            name="Reception"
+            action="clinic_reception_action"/>
+        
+        <!-- Configuration Menu -->
+        <menuitem
+            id="clinic_configuration_menu"
+            name="Configuration"
+            sequence="100">
+
+            <!-- Departments Menu -->
+            <menuitem
+                id="clinic_departments_menu"
+                name="Departments"
+                action="action_clinic_department"
+                sequence="1" />
+        </menuitem>
     </menuitem>
 </odoo>
