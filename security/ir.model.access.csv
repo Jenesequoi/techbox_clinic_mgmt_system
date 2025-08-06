@@ -1,7 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-<<<<<<< HEAD
-access_clinic_reception,clinic.reception,model_clinic_reception,base.group_user,1,1,1,1
-=======
 access_clinic_reception_user,access_clinic_reception,model_clinic_reception,base.group_user,1,1,1,1
 access_clinic_department_user,access_clinic_department,model_clinic_department,base.group_user,1,1,1,1
->>>>>>> origin
+access_clinic_mch_user,access_clinic_mch,model_clinic_mch,base.group_user,1,1,1,1
