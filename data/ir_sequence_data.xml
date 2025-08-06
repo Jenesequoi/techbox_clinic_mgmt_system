@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Consultation Department Sequence -->
+        <record id="seq_clinic_consultation" model="ir.sequence">
+            <field name="name">Consultation Visits</field>
+            <field name="code">clinic.reception.consultation</field>
+            <field name="prefix">CONS/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="use_date_range">True</field>
+            <field name="year_increment">1</field>
+        </record>
+
+        <!-- MCH Department Sequence -->
+        <record id="seq_clinic_mch" model="ir.sequence">
+            <field name="name">MCH Visits</field>
+            <field name="code">clinic.reception.mch</field>
+            <field name="prefix">MCH/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="use_date_range">True</field>
+            <field name="year_increment">1</field>
+        </record>
+
+        <!-- Pharmacy Department Sequence -->
+        <record id="seq_clinic_pharmacy" model="ir.sequence">
+            <field name="name">Pharmacy Visits</field>
+            <field name="code">clinic.reception.pharmacy</field>
+            <field name="prefix">PHA/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="use_date_range">True</field>
+            <field name="year_increment">1</field>
+        </record>
+
+        <!-- Laboratory Department Sequence -->
+        <record id="seq_clinic_laboratory" model="ir.sequence">
+            <field name="name">Laboratory Visits</field>
+            <field name="code">clinic.reception.laboratory</field>
+            <field name="prefix">LAB/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="use_date_range">True</field>
+            <field name="year_increment">1</field>
+        </record>
+
+        <!-- Imaging Department Sequence -->
+        <record id="seq_clinic_imaging" model="ir.sequence">
+            <field name="name">Imaging Visits</field>
+            <field name="code">clinic.reception.imaging</field>
+            <field name="prefix">IMG/%(year)s/</field>
+            <field name="padding">5</field>
+            <field name="number_next">1</field>
+            <field name="use_date_range">True</field>
+            <field name="year_increment">1</field>
+        </record>
+    </data>
+</odoo>
