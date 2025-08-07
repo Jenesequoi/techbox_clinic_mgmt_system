@@ -1,2 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_clinic_reception_user,access_clinic_reception,model_clinic_reception,base.group_user,1,1,1,1
+access_clinic_reception_user,clinic.reception,model_clinic_reception,group_clinic_receptionist,1,1,1,1
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_receptionist,1,0,0,0
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_doctor,1,1,1,1
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_nurse,1,1,0,0
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_administrator,1,1,1,1
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_labaratory_technician,1,1,0,0
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_phamasist,1,1,0,0
