@@ -16,6 +16,7 @@
         'views/clinic_department_views.xml',
         'views/clinic_dashboard_views.xml',
         'views/clinic_reception_views.xml',
+        'views/clinic_mch_views.xml',
         'views/menus.xml',
     ],
     'installable': True,

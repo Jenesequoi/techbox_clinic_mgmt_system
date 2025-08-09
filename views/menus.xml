@@ -19,7 +19,10 @@
             id="clinic_reception_menu"
             name="Reception"
             action="clinic_reception_action"/>
-        
+           <!-- MCH Menu -->
+        <!-- <menuitem id="menu_clinic_mch_root" name="Mother And Child Health Care" sequence="3">
+            <menuitem id="menu_clinic_mch" name="MCH Visits" action="action_clinic_mch" sequence="1"/>
+        </menuitem> -->
         <!-- Configuration Menu -->
         <menuitem
             id="clinic_configuration_menu"
