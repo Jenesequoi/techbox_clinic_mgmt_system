@@ -35,6 +35,5 @@
         <field name="name">Maternal And Child Health</field>
         <field name="res_model">clinic.mch</field>
         <field name="view_mode">tree,form</field>
-        <field name="context">{'default_patient_id': default_patient_id, 'default_reception_id': default_reception_id}</field>
     </record>
 </odoo>
