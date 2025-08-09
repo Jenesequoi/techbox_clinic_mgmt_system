@@ -11,7 +11,6 @@
                         <field name="patient_id"/>
                         <field name="pregnancy_stage"/>
                         <field name="expected_delivery_date"/>
-                        <field name="blood_pressure"/>
                         <field name="weight"/>
                         <field name="notes"/>
                     </group>
