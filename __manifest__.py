@@ -9,25 +9,30 @@
     'depends': [
         'base',
         'mail',
-        'product',  # ✅ Added to resolve '_unknown' model reference
+        'product',
     ],
     'data': [
+        # Security rules first
         'security/ir.model.access.csv',
+
+        # Data records
+        'data/clinic_department_data.xml',
         'data/ir_sequence_data.xml',
 
-        # Views that define actions BEFORE menus
+        # Views that define models & actions (load before menus)
+        'views/clinic_department_views.xml',
+        'views/clinic_dashboard_views.xml',
         'views/pharmacy_dispense_views.xml',
-
-        # Menus referencing actions
-        'views/menus.xml',
-
-        # Other views
         'views/clinic_reception_views.xml',
         'views/clinic_prescription_views.xml',
         'views/pharmacy_queue_views.xml',
+
+        # Menus last
+        'views/menus.xml',
     ],
-    'auto_install': False,
-    'application': True,
     'installable': True,
+    'application': True,
+    'auto_install': False,
     'sequence': 10,
 }
+

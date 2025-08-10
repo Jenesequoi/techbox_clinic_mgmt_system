@@ -1,7 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_clinic_reception_user,access.clinic.reception.user,model_clinic_reception,base.group_user,1,1,1,1
-access_pharmacy_queue,access.pharmacy.queue,model_pharmacy_queue,base.group_user,1,1,1,0
+access_clinic_department_user,access.clinic.department.user,model_clinic_department,base.group_user,1,1,1,1
+access_pharmacy_queue_user,access.pharmacy.queue.user,model_pharmacy_queue,base.group_user,1,1,1,0
 access_clinic_prescription_user,access.clinic.prescription.user,model_clinic_prescription,base.group_user,1,1,1,0
 access_clinic_prescription_line_user,access.clinic.prescription.line.user,model_clinic_prescription_line,base.group_user,1,1,1,0
-access_pharmacy_dispense,access.pharmacy.dispense,model_pharmacy_dispense,base.group_user,1,1,1,0
-access_pharmacy_dispense_line,access.pharmacy.dispense.line,model_pharmacy_dispense_line,base.group_user,1,1,1,0
+access_pharmacy_dispense_user,access.pharmacy.dispense.user,model_pharmacy_dispense,base.group_user,1,1,1,0
+access_pharmacy_dispense_line_user,access.pharmacy.dispense.line.user,model_pharmacy_dispense_line,base.group_user,1,1,1,0
+access_clinic_dashboard_user,access.clinic.dashboard.user,model_clinic_dashboard,base.group_user,1,0,0,0

@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Root Menu -->
-    <menuitem 
+    <menuitem
         id="clinic_root_menu"
         name="Clinic Management"
         groups="base.group_user"
         sequence="10"/>
 
+    <!-- Dashboard Menu -->
+    <menuitem
+        id="clinic_dashboard_menu"
+        name="Dashboard"
+        parent="clinic_root_menu"
+        action="clinic_dashboard_action"
+        sequence="1" />
+
     <!-- Clinic Reception Submenu -->
-    <menuitem 
+    <menuitem
         id="clinic_reception_menu"
         name="Clinic Reception"
         parent="clinic_root_menu"
@@ -16,31 +24,47 @@
         sequence="10"/>
 
     <!-- Pharmacy Root -->
-    <menuitem 
+    <menuitem
         id="menu_clinic_pharmacy_root"
         name="Pharmacy"
         parent="clinic_root_menu"
         sequence="20"/>
 
     <!-- Pharmacy Submenus -->
-    <menuitem 
+    <menuitem
         id="menu_pharmacy_prescription"
         name="Prescriptions"
         parent="menu_clinic_pharmacy_root"
         action="action_clinic_prescription"
         sequence="10"/>
 
-    <menuitem 
+    <menuitem
         id="menu_pharmacy_dispense"
         name="Dispensing Log"
         parent="menu_clinic_pharmacy_root"
         action="action_pharmacy_dispense"
         sequence="20"/>
 
-    <menuitem 
+    <menuitem
         id="menu_pharmacy_queue"
         name="Queue"
         parent="menu_clinic_pharmacy_root"
         action="action_pharmacy_queue"
         sequence="30"/>
+
+    <!-- Configuration Menu -->
+    <menuitem
+        id="clinic_configuration_menu"
+        name="Configuration"
+        parent="clinic_root_menu"
+        sequence="100"/>
+
+    <!-- Departments Menu -->
+    <menuitem
+        id="clinic_departments_menu"
+        name="Departments"
+        parent="clinic_configuration_menu"
+        action="action_clinic_department"
+        sequence="1" />
 </odoo>
+
