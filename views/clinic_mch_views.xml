@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_mch_form" model="ir.ui.view">
+        <field name="name">clinic.mch.form</field>
+        <field name="model">clinic.mch</field>
+        <field name="arch" type="xml">
+            <form string="Maternal And Child Health">
+                <sheet>
+                    <group>
+                        <field name="reception_id"/>
+                        <field name="patient_id"/>
+                        <field name="pregnancy_stage"/>
+                        <field name="expected_delivery_date"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mch_tree" model="ir.ui.view">
+        <field name="name">clinic.mch.tree</field>
+        <field name="model">clinic.mch</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="patient_id"/>
+                <field name="pregnancy_stage"/>
+                <field name="expected_delivery_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="clinic_mch_action" model="ir.actions.act_window">
+        <field name="name">Maternal And Child Health</field>
+        <field name="res_model">clinic.mch</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

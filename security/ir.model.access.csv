@@ -7,3 +7,5 @@ access_clinic_prescription_line_user,access.clinic.prescription.line.user,model_
 access_pharmacy_dispense_user,access.pharmacy.dispense.user,model_pharmacy_dispense,base.group_user,1,1,1,0
 access_pharmacy_dispense_line_user,access.pharmacy.dispense.line.user,model_pharmacy_dispense_line,base.group_user,1,1,1,0
 access_clinic_dashboard_user,access.clinic.dashboard.user,model_clinic_dashboard,base.group_user,1,0,0,0
+access_clinic_mch_user,access_clinic_mch,model_clinic_mch,base.group_user,1,1,1,1
+
