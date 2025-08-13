@@ -4,6 +4,7 @@ class ClinicConsultancy(models.Model):
     _name = 'clinic.consultancy'
     _description = 'Clinic Consultancy'
 
+    name = fields.Char(string='Consultancy Name', required=True)
     patient_id = fields.Many2one('res.partner', string='Patient')
     doctor_id = fields.Many2one('res.users', string='Doctor')
     date = fields.Date(string='Consultation Date')
