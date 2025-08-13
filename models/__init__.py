@@ -5,4 +5,4 @@ from . import pharmacy_queue
 from . import clinic_prescription
 from . import pharmacy_dispense
 from . import clinic_mch
-
+from . import clinic_consultancy
