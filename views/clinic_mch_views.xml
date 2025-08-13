@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_mch_form" model="ir.ui.view">
+        <field name="name">clinic.mch.form</field>
+        <field name="model">clinic.mch</field>
+        <field name="arch" type="xml">
+            <form string="Maternal And Child Health">
+                <sheet>
+                    <group>
+                        <field name="reception_id"/>
+                        <field name="patient_id"/>
+                        <field name="date"/>
+                    </group>
+
+                      <!-- Pregnancy Section -->
+                    <group string="Pregnancy Details">
+                        <field name="pregnancy_status" required="1"/>
+                        <field name="weeks_pregnant"/>
+                        <field name="delivery_date"/>
+                    </group>
+
+                    <!-- Child Section -->
+                    <group string="Child Details">
+                        <field name="immunization"/>
+                    </group>
+
+                     <!-- Common Notes -->
+                    <group string="Clinical Notes">
+                        <field name="notes" placeholder="Enter clinical findings and recommendations..."/>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mch_tree" model="ir.ui.view">
+        <field name="name">clinic.mch.tree</field>
+        <field name="model">clinic.mch</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="date"/>
+                <field name="patient_id"/>
+                <field name="pregnancy_status"/>
+                <field name="weeks_pregnant" invisible="context.get('hide_pregnancy_fields')"/>
+                <field name="delivery_date" invisible="context.get('hide_pregnancy_fields')"/>
+                <field name="immunization" invisible="context.get('hide_child_fields')"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- <record id="clinic_mch_action" model="ir.actions.act_window">
+        <field name="name">Maternal And Child Health</field>
+        <field name="res_model">clinic.mch</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{
+            'hide_pregnancy_fields': [('pregnancy_status','=','child')],
+            'hide_child_fields': [('pregnancy_status','!=','child')]}
+        </field>
+    </record> -->
+     <!-- Action for MCH -->
+    <record id="action_clinic_mch" model="ir.actions.act_window">
+        <field name="name">Maternal &amp; Child Health</field>
+        <field name="res_model">clinic.mch</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <!-- <menuitem id="menu_clinic_mch_root" name="Mother And Child Health Care" sequence="3">
+            <menuitem id="menu_clinic_mch" name="MCH Visits" action="action_clinic_mch" sequence="1"/>
+    </menuitem> -->
+</odoo>
