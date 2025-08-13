@@ -1,0 +1,49 @@
+<odoo>
+    <!-- Action first -->
+    <record id="action_clinic_consultancy" model="ir.actions.act_window">
+        <field name="name">Consultancy Sessions</field>
+        <field name="res_model">clinic.consultancy</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_clinic_root" name="Clinic Consultancy" sequence="1"/>
+    <menuitem id="menu_clinic_consultancy" name="Consultancy Sessions"
+              parent="menu_clinic_root" action="action_clinic_consultancy"/>
+
+    <!-- Tree View -->
+    <record id="view_clinic_consultancy_tree" model="ir.ui.view">
+        <field name="name">clinic.consultancy.tree</field>
+        <field name="model">clinic.consultancy</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="consultant"/>
+                <field name="fee"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_clinic_consultancy_form" model="ir.ui.view">
+        <field name="name">clinic.consultancy.form</field>
+        <field name="model">clinic.consultancy</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="date"/>
+                        <field name="partner_id"/>
+                        <field name="consultant"/>
+                        <field name="fee"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>
+

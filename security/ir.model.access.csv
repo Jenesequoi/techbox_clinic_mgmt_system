@@ -8,4 +8,9 @@ access_pharmacy_dispense_user,access.pharmacy.dispense.user,model_pharmacy_dispe
 access_pharmacy_dispense_line_user,access.pharmacy.dispense.line.user,model_pharmacy_dispense_line,base.group_user,1,1,1,0
 access_clinic_dashboard_user,access.clinic.dashboard.user,model_clinic_dashboard,base.group_user,1,0,0,0
 access_clinic_mch_user,access_clinic_mch,model_clinic_mch,base.group_user,1,1,1,1
-
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_receptionist,1,0,0,0
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_doctor,1,1,1,1
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_nurse,1,1,0,0
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_administrator,1,1,1,1
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_labaratory_technician,1,1,0,0
+access_clinic_consultancy_user,clinic.consultancy,model_clinic_consultancy,group_clinic_phamasist,1,1,0,0
