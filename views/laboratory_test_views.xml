@@ -1,0 +1,59 @@
+<odoo>
+    <!-- Tree View -->
+    <record id="view_clinic_laboratory_test_tree" model="ir.ui.view">
+        <field name="name">clinic.laboratory.test.tree</field>
+        <field name="model">clinic.laboratory.test</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="reception_id"/>
+                <field name="patient_id"/>
+                <field name="date"/>
+                <field name="test_type"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_clinic_laboratory_test_form" model="ir.ui.view">
+        <field name="name">clinic.laboratory.test.form</field>
+        <field name="model">clinic.laboratory.test</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="reception_id"/>
+                            <field name="patient_id" readonly="1"/>
+                            <field name="date"/>
+                            <field name="test_type"/>
+                            <field name="status"/>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Enter test details or remarks..."/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_clinic_laboratory_test" model="ir.actions.act_window">
+        <field name="name">Laboratory Tests</field>
+        <field name="res_model">clinic.laboratory.test</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new laboratory test record
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_clinic_laboratory_root" name="Laboratory"/>
+    <menuitem id="menu_clinic_laboratory_tests"
+              name="Laboratory Tests"
+              parent="menu_clinic_laboratory_root"
+              action="action_clinic_laboratory_test"/>
+</odoo>
