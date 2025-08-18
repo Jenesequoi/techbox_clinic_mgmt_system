@@ -26,9 +26,10 @@ class ClinicLaboratoryTest(models.Model):
         ], string="Test Type", required=True)
     description = fields.Text(string="Description / Remarks")
     status = fields.Selection([
-        ('queued', 'Queued'),
+        ('waiting', 'Waiting'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
-        ('cancelled', 'Cancelled'),
-    ], string='Status', default='queued', tracking=True)
+        ('cancelled', 'Cancelled')
+    ], string="Status", default="waiting", tracking=True)
+    
     

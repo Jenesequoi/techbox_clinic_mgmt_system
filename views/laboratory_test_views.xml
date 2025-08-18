@@ -1,26 +1,32 @@
 <odoo>
-    
     <!-- Form View -->
     <record id="view_clinic_laboratory_test_form" model="ir.ui.view">
         <field name="name">clinic.laboratory.test.form</field>
         <field name="model">clinic.laboratory.test</field>
         <field name="arch" type="xml">
-            <form>
+            <form string="Laboratory Test">
                 <sheet>
+                    <!-- Statusbar -->
+                    <header>
+                        <field name="status"
+                               widget="statusbar"
+                               statusbar_visible="waiting,in_progress,completed,cancelled"/>
+                    </header>
+
                     <group>
                         <group>
                             <field name="reception_id"/>
                             <field name="patient_id" readonly="1"/>
                             <field name="date"/>
                             <field name="test_type"/>
-                            <field name="status"/>
                         </group>
                         <group>
                             <field name="description" placeholder="Enter test details or remarks..."/>
                         </group>
                     </group>
                 </sheet>
-                 <div class="oe_chatter">
+
+                <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
                     <field name="activity_ids" widget="mail_activity"/>
                     <field name="message_ids" widget="mail_thread"/>
@@ -44,7 +50,7 @@
         </field>
     </record>
 
-     <!-- Search View -->
+    <!-- Search View -->
     <record id="view_clinic_laboratory_test_search" model="ir.ui.view">
         <field name="name">clinic.laboratory.test.search</field>
         <field name="model">clinic.laboratory.test</field>
@@ -54,43 +60,26 @@
                 <field name="reception_id"/>
                 <field name="patient_id"/>
                 <field name="test_type"/>
-                
+
                 <!-- Status filters -->
                 <separator/>
-                <filter name="status_waiting" string="Waiting" 
-                        domain="[('status', '=', 'waiting')]"/>
-                <filter name="status_in_progress" string="In Progress" 
-                        domain="[('status', '=', 'in_progress')]"/>
-                <filter name="status_completed" string="Completed" 
-                        domain="[('status', '=', 'completed')]"/>
-                <filter name="status_cancelled" string="Cancelled" 
-                        domain="[('status', '=', 'cancelled')]"/>
-                
+                <filter name="status_waiting" string="Waiting" domain="[('status','=','waiting')]"/>
+                <filter name="status_in_progress" string="In Progress" domain="[('status','=','in_progress')]"/>
+                <filter name="status_completed" string="Completed" domain="[('status','=','completed')]"/>
+                <filter name="status_cancelled" string="Cancelled" domain="[('status','=','cancelled')]"/>
+
                 <!-- Date filters -->
                 <separator/>
-                <filter name="today" string="Today" 
-                        domain="[('date', '=', context_today())]"/>
-                <filter name="week" string="This Week" 
-                        domain="[('date', '>=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                <filter name="month" string="This Month" 
-                        domain="[('date', '>=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
-                
-                <!-- Search panel -->
-                <searchpanel>
-                    <field name="test_type" enable_counters="1" expand="1"/>
-                    <field name="status" enable_counters="1" expand="1"/>
-                </searchpanel>
-                
+                <filter name="today" string="Today" domain="[('date','=',context_today())]"/>
+                <filter name="week" string="This Week" domain="[('date','>=',(context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="month" string="This Month" domain="[('date','>=',(context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
+
                 <!-- Group By options -->
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_by_status" 
-                            context="{'group_by': 'status'}"/>
-                    <filter string="Test Type" name="group_by_test_type" 
-                            context="{'group_by': 'test_type'}"/>
-                    <filter string="Date" name="group_by_date" 
-                            context="{'group_by': 'date:day'}"/>
-                    <filter string="Patient" name="group_by_patient" 
-                            context="{'group_by': 'patient_id'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by':'status'}"/>
+                    <filter string="Test Type" name="group_by_test_type" context="{'group_by':'test_type'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by':'date:day'}"/>
+                    <filter string="Patient" name="group_by_patient" context="{'group_by':'patient_id'}"/>
                 </group>
             </search>
         </field>
