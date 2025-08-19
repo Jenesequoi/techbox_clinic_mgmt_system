@@ -17,6 +17,7 @@
         'views/clinic_consultancy_views.xml',
         'views/clinic_dashboard_views.xml',
         'views/clinic_mch_views.xml',
+        'views/laboratory_test_views.xml',
         'views/clinic_prescription_views.xml',
         'views/pharmacy_queue_views.xml',
         'views/pharmacy_dispense_views.xml',

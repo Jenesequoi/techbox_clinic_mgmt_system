@@ -1,39 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Form View -->
     <record id="view_mch_form" model="ir.ui.view">
         <field name="name">clinic.mch.form</field>
         <field name="model">clinic.mch</field>
         <field name="arch" type="xml">
-            <form string="Maternal And Child Health">
+            <form string="Mother and Child Healthcare Record">
+                <header>
+                    <field name="service_type" widget="statusbar" 
+                           statusbar_visible="family_planning,preconceptual,antenatal,immunization,postnatal"/>
+                </header>
                 <sheet>
                     <group>
-                        <field name="reception_id"/>
-                        <field name="patient_id"/>
-                        <field name="date"/>
+                        <group>
+                            <field name="reception_id"/>
+                            <field name="patient_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="date"/>
+                        </group>
+                        <group>
+                            <field name="service_type"/>
+                            <field name="next_visit"/>
+                        </group>
                     </group>
 
-                      <!-- Pregnancy Section -->
-                    <group string="Pregnancy Details">
-                        <field name="pregnancy_status" required="1"/>
-                        <field name="weeks_pregnant"/>
-                        <field name="delivery_date"/>
-                    </group>
+                    <notebook>
+                        <!-- 1. Family Planning Page -->
+                        <page string="Family Planning" invisible="service_type != 'family_planning'">
+                            <group>
+                                <group string="Services Provided">
+                                    <field name="fp_method"/>
+                                    <field name="fp_advice_given"/>
+                                    <field name="fp_next_visit"/>
+                                </group>
+                                <group string="Method Details">
+                                    <field name="fp_advice_details" invisible="fp_method == 'none'"/>
+                                </group>
+                            </group>
+                        </page>
 
-                    <!-- Child Section -->
-                    <group string="Child Details">
-                        <field name="immunization"/>
-                    </group>
+                        <!-- 2. Preconceptual Care Page -->
+                        <page string="Preconceptual Care" invisible="service_type != 'preconceptual'">
+                            <group>
+                                <group string="Medical History">
+                                    <field name="pc_genetic_history"/>
+                                    <field name="pc_reproductive_history"/>
+                                    <field name="pc_medication"/>
+                                </group>
+                                <group string="Health Assessment">
+                                    <field name="pc_environmental_hazards"/>
+                                    <field name="pc_special_diet"/>
+                                    <field name="pc_weight"/>
+                                    <field name="pc_physical_activity"/>
+                                    <field name="pc_substance_abuse"/>
+                                </group>
+                                <group string="Screening">
+                                    <field name="pc_oral_health"/>
+                                    <field name="pc_violence_screening"/>
+                                    <field name="pc_mental_health"/>
+                                </group>
+                            </group>
+                        </page>
 
-                     <!-- Common Notes -->
-                    <group string="Clinical Notes">
-                        <field name="notes" placeholder="Enter clinical findings and recommendations..."/>
-                    </group>
+                        <!-- 3. Antenatal Care Page -->
+                        <page string="Antenatal Care" invisible="service_type != 'antenatal'">
+                            <group>
+                                <group string="Visit Details">
+                                    <field name="anc_visit_number"/>
+                                    <field name="anc_bp"/>
+                                    <field name="anc_weight"/>
+                                    <field name="anc_height"/>
+                                    <field name="anc_fundal_height"/>
+                                    <field name="anc_fetal_heart_rate"/>
+                                </group>
+                                <group string="Investigations">
+                                    <field name="anc_urine_test"/>
+                                    <field name="anc_blood_test"/>
+                                    <field name="anc_ultrasound"/>
+                                </group>
+                            </group>
+                            <separator string="Education &amp; Complications"/>
+                            <field name="anc_education_given"/>
+                            <field name="anc_complications"/>
+                        </page>
 
+                        <!-- 4. Immunization Page -->
+                        <page string="Immunization" invisible="service_type != 'immunization'">
+                            <group>
+                                <group string="Vaccine Details">
+                                    <field name="immunization_type"/>
+                                    <field name="immunization_dose"/>
+                                    <field name="immunization_date"/>
+                                    <field name="immunization_next_date"/>
+                                    <field name="immunization_lot_number"/>
+                                    <field name="immunization_site"/>
+                                    <field name="immunization_provider"/>
+                                </group>
+                                <group string="Reactions">
+                                    <field name="immunization_reaction"/>
+                                    <field name="immunization_reaction_management"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- 5. Postnatal Care Page -->
+                        <page string="Postnatal Care" invisible="service_type != 'postnatal'">
+                            <group>
+                                <group string="Mother's Health">
+                                    <field name="pnc_visit_day"/>
+                                    <field name="pnc_mother_condition"/>
+                                    <field name="pnc_mother_complications"/>
+                                </group>
+                                <group string="Baby's Health">
+                                    <field name="pnc_baby_condition"/>
+                                    <field name="pnc_baby_weight"/>
+                                    <field name="pnc_baby_feeding"/>
+                                </group>
+                                <group string="Breastfeeding Support">
+                                    <field name="pnc_breastfeeding"/>
+                                    <field name="pnc_breastfeeding_issues"/>
+                                    <field name="pnc_breastfeeding_support"/>
+                                    <field name="pnc_family_planning"/>
+                                    <field name="pnc_next_visit"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- 6. Clinical Notes Page - Always visible -->
+                        <page string="Clinical Notes">
+                            <field name="notes"/>
+                            <field name="follow_up_instructions"/>
+                        </page>
+                    </notebook>
                 </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
             </form>
         </field>
     </record>
 
+    <!-- Tree View -->
     <record id="view_mch_tree" model="ir.ui.view">
         <field name="name">clinic.mch.tree</field>
         <field name="model">clinic.mch</field>
@@ -41,30 +149,57 @@
             <tree>
                 <field name="date"/>
                 <field name="patient_id"/>
-                <field name="pregnancy_status"/>
-                <field name="weeks_pregnant" invisible="context.get('hide_pregnancy_fields')"/>
-                <field name="delivery_date" invisible="context.get('hide_pregnancy_fields')"/>
-                <field name="immunization" invisible="context.get('hide_child_fields')"/>
+                <field name="service_type"/>
+                <field name="fp_method" invisible="service_type != 'family_planning'"/>
+                <field name="immunization_type" invisible="service_type != 'immunization'"/>
+                <field name="next_visit"/>
             </tree>
         </field>
     </record>
 
-    <!-- <record id="clinic_mch_action" model="ir.actions.act_window">
-        <field name="name">Maternal And Child Health</field>
-        <field name="res_model">clinic.mch</field>
-        <field name="view_mode">tree,form</field>
-        <field name="context">{
-            'hide_pregnancy_fields': [('pregnancy_status','=','child')],
-            'hide_child_fields': [('pregnancy_status','!=','child')]}
+    <!-- Search View -->
+    <record id="view_mch_search" model="ir.ui.view">
+        <field name="name">clinic.mch.search</field>
+        <field name="model">clinic.mch</field>
+        <field name="arch" type="xml">
+            <search string="Mother and Child Healthcare">
+                <!-- Basic search fields -->
+                <field name="patient_id" string="Patient"/>
+                <field name="reception_id" string="Reception Ref"/>
+
+                <!-- Filters for service_type -->
+                <filter string="Antenatal" name="anc" domain="[('service_type', '=', 'antenatal')]"/>
+                <filter string="Postnatal" name="postnatal" domain="[('service_type', '=', 'postnatal')]"/>
+                <filter string="Family Planning" name="family_planning" domain="[('service_type', '=', 'family_planning')]"/>
+                <filter string="Preconceptual" name="preconceptual" domain="[('service_type', '=', 'preconceptual')]"/>
+                <filter string="Immunization" name="immunization" domain="[('service_type', '=', 'immunization')]"/>
+
+                <!-- <searchpanel>
+                    <field name="department_id" enable_counters="1" expand="1"/>
+                    <field name="state" enable_counters="1" expand="1"/>
+                </searchpanel> -->
+
+                <!-- Group By -->
+                <group expand="1" string="Group By">
+                    <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
+                    <filter string="Reception" name="group_by_reception" context="{'group_by': 'reception_id'}"/>
+                    <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
+                </group>
+            </search>
         </field>
-    </record> -->
-     <!-- Action for MCH -->
+    </record>
+
+    <!-- Action -->
     <record id="action_clinic_mch" model="ir.actions.act_window">
-        <field name="name">Maternal &amp; Child Health</field>
+        <field name="name">Mother and Child Healthcare</field>
         <field name="res_model">clinic.mch</field>
         <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_mch_search"/>
+        <field name="context">
+            {
+                'search_default_today': 1,
+                'default_date': context_today()
+            }
+        </field>
     </record>
-    <!-- <menuitem id="menu_clinic_mch_root" name="Mother And Child Health Care" sequence="3">
-            <menuitem id="menu_clinic_mch" name="MCH Visits" action="action_clinic_mch" sequence="1"/>
-    </menuitem> -->
 </odoo>
