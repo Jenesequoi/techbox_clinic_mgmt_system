@@ -1,21 +1,21 @@
-
 from odoo import models, fields, api, _
-
+from odoo.exceptions import UserError # Added import for exceptions
 
 class ClinicPrescription(models.Model):
     _name = 'clinic.prescription'
+    _inherit = ['mail.thread', 'mail.activity.mixin'] # <-- ADD INHERITANCE HERE
     _description = 'Clinic Prescription'
 
     name = fields.Char(string='Prescription ID', required=True, default='New', readonly=True, copy=False)
-    patient_id = fields.Many2one('res.partner', string='Patient', required=True)
-    doctor_id = fields.Many2one('res.users', string='Doctor', required=True)
+    patient_id = fields.Many2one('res.partner', string='Patient', required=True, tracking=True) # tracking=True adds tracking
+    doctor_id = fields.Many2one('res.users', string='Doctor', required=True, tracking=True)
     line_ids = fields.One2many('clinic.prescription.line', 'prescription_id', string='Medications')
 
     verification_status = fields.Selection([
         ('pending', 'Pending Verification'),
         ('approved', 'Approved'),
         ('flagged', 'Flagged for Review')
-    ], default='pending', string='Verification Status')
+    ], default='pending', string='Verification Status', tracking=True) # <-- Track status changes
 
     verified_by = fields.Many2one('res.users', string='Verified By', readonly=True)
     verification_date = fields.Datetime(string='Verified On', readonly=True)
@@ -39,12 +39,16 @@ class ClinicPrescription(models.Model):
             rec.verification_status = 'approved'
             rec.verified_by = self.env.user
             rec.verification_date = fields.Datetime.now()
+            # Log a note automatically
+            rec.message_post(body=_("Prescription approved for dispensing."))
 
     def action_flag_issue(self):
         for rec in self:
             rec.verification_status = 'flagged'
             rec.verified_by = self.env.user
             rec.verification_date = fields.Datetime.now()
+            # Log a note automatically
+            rec.message_post(body=_("Prescription flagged for review."))
 
 
 class ClinicPrescriptionLine(models.Model):

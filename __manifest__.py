@@ -10,6 +10,7 @@
         'base',
         'mail',
         'product',
+        'hr',
     ],
     'data': [
         # Security rules first

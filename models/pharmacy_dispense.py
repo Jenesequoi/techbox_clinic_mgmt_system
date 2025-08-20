@@ -1,16 +1,30 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
-
+from odoo.exceptions import ValidationError, UserError
 
 class PharmacyDispense(models.Model):
     _name = 'pharmacy.dispense'
+    _inherit = ['mail.thread', 'mail.activity.mixin'] # <-- ADD INHERITANCE HERE
     _description = 'Medication Dispensing Log'
     _order = 'dispensed_on desc'
 
-    prescription_id = fields.Many2one('clinic.prescription', string="Prescription", required=True)
-    pharmacist_id = fields.Many2one('res.users', string="Dispensed By", default=lambda self: self.env.user, readonly=True)
+    name = fields.Char(string='Dispense Reference', required=True, readonly=True, default='New') # Added a name field
+    prescription_id = fields.Many2one('clinic.prescription', string="Prescription", required=True, tracking=True)
+    pharmacist_id = fields.Many2one('res.users', string="Dispensed By", default=lambda self: self.env.user, readonly=True, tracking=True)
     dispensed_on = fields.Datetime(string="Dispensed On", default=fields.Datetime.now, readonly=True)
+    status = fields.Selection([ # Added a status field for better tracking
+        ('draft', 'Draft'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='draft', tracking=True)
     line_ids = fields.One2many('pharmacy.dispense.line', 'dispense_id', string="Dispensed Items")
+    notes = fields.Text(string='Internal Notes') # Added a notes field
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', 'New') == 'New':
+            vals['name'] = self.env['ir.sequence'].next_by_code('pharmacy.dispense') or 'New'
+        return super(PharmacyDispense, self).create(vals)
 
     def action_complete_dispense(self):
         for rec in self:
@@ -29,7 +43,14 @@ class PharmacyDispense(models.Model):
                 # Deduct stock (simplified, assumes real stock management system)
                 line.product_id.qty_available -= line.quantity
 
+            rec.status = 'completed'
             rec.prescription_id.verification_status = 'dispensed'
+            rec.message_post(body=_("Dispensing completed successfully."))
+
+    def action_cancel(self):
+        for rec in self:
+            rec.status = 'cancelled'
+            rec.message_post(body=_("Dispensing cancelled."))
 
 
 class PharmacyDispenseLine(models.Model):
