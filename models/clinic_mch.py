@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import timedelta
 
 class ClinicMCH(models.Model):
@@ -14,6 +14,14 @@ class ClinicMCH(models.Model):
         required=True,
         ondelete='cascade'
     )
+
+    department_id = fields.Many2one(
+        'clinic.department',
+        string='Department',
+        required=True
+    )
+
+
     patient_id = fields.Many2one(
         'res.partner',
         string='Patient',
@@ -33,6 +41,15 @@ class ClinicMCH(models.Model):
         ('immunization', 'Immunization'),
         ('postnatal', 'Postnatal Care')
     ], string='Service Type', required=True, tracking=True)
+
+    # state
+    state = fields.Selection([
+        ('waiting', 'Waiting'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='waiting', tracking=True, group_expand='_expand_states')
+
 
     # ========== Family Planning Fields ==========
     fp_method = fields.Selection([
@@ -156,3 +173,58 @@ class ClinicMCH(models.Model):
         
         for field in fields_to_reset.get(self.service_type, []):
             self[field] = False
+
+    # @api.model_create_multi
+    # def create(self, vals_list):
+    #     for vals in vals_list:
+    #         if not vals.get('ref') or vals.get('ref') == '/':
+    #             department_id = vals.get('department_id')
+    #             if not department_id:
+    #                 raise ValueError(_('Department is required to generate visit ID.'))
+
+    #             department = self.env['clinic.department'].browse(department_id)
+    #             if not department:
+    #                 raise ValueError(_('Invalid department selected.'))
+
+    #             sequence_code = f'clinic.mch.{department.code}'
+    #             sequence = self.env['ir.sequence'].sudo().next_by_code(sequence_code)
+
+    #             if not sequence:
+    #                 # Fallback create sequence if not found
+    #                 self.env['ir.sequence'].sudo().create({
+    #                     'name': f'{department.name} MCH Visits',
+    #                     'code': sequence_code,
+    #                     'prefix': f'MCH/{department.code.upper()}/%(year)s/',
+    #                     'padding': 5,
+    #                     'number_next': 1,
+    #                 })
+    #                 sequence = self.env['ir.sequence'].sudo().next_by_code(sequence_code)
+
+    #             if not sequence:
+    #                 raise ValueError(_('Could not generate visit ID. Please check sequence configuration.'))
+
+    #             vals['ref'] = sequence
+
+    #     return super().create(vals_list)
+
+    # ---------------------------
+    # State Machine Actions
+    # ---------------------------
+    def _expand_states(self, states, domain, order):
+        return [key for key, val in type(self).state.selection]
+
+    def action_start(self):
+        for rec in self:
+            rec.state = 'in_progress'
+
+    def action_complete(self):
+        for rec in self:
+            rec.state = 'completed'
+
+    def action_cancel(self):
+        for rec in self:
+            rec.state = 'cancelled'
+
+    def action_reset(self):
+        for rec in self:
+            rec.state = 'waiting'
