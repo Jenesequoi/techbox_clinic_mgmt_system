@@ -31,5 +31,34 @@ class ClinicLaboratoryTest(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     ], string="Status", default="waiting", tracking=True)
+
+     # state
+    state = fields.Selection([
+        ('waiting', 'Waiting'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='waiting', tracking=True, group_expand='_expand_states')
+
+     # Button Actions
+    # ---------------------------
+    def _expand_states(self, states, domain, order):
+        return [key for key, val in type(self).state.selection]
+
+    def action_start(self):
+        for rec in self:
+            rec.state = 'in_progress'
+
+    def action_complete(self):
+        for rec in self:
+            rec.state = 'completed'
+
+    def action_cancel(self):
+        for rec in self:
+            rec.state = 'cancelled'
+
+    def action_reset(self):
+        for rec in self:
+            rec.state = 'waiting'
     
     
