@@ -36,6 +36,7 @@
                             <field name="patient_id" readonly="1"/>
                             <field name="date"/>
                             <field name="test_type"/>
+                            <field name="doctor_id" string="Doctor"/>
                         </group>
                         <group>
                             <field name="description" placeholder="Enter test details or remarks..."/>
@@ -63,6 +64,7 @@
                 <field name="date"/>
                 <field name="test_type"/>
                 <field name="status"/>
+                <field name="doctor_id" string="Doctor"/>
             </tree>
         </field>
     </record>

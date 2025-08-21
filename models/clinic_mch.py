@@ -29,6 +29,8 @@ class ClinicMCH(models.Model):
         store=True,
         readonly=True
     )
+    # Doctor in charge field
+    doctor_id = fields.Many2one('hr.employee',string='Doctor In Charge',required=True,help="Select the doctor responsible for this MCH visit")
     date = fields.Date(
         string='Visit Date',
         default=fields.Date.context_today,
@@ -160,6 +162,24 @@ class ClinicMCH(models.Model):
     next_visit = fields.Date(string='Next Appointment')
     follow_up_instructions = fields.Text(string='Follow-up Instructions')
 
+    @api.onchange('department_id')
+    def _onchange_department_id(self):
+        """Reset doctor when department changes and filter doctors"""
+        self.doctor_id = False
+        
+        # Return domain to filter employees by department
+        if self.department_id:
+            return {
+                'domain': {
+                    'doctor_id': [('department_id', '=', self.department_id.id)]
+                }
+            }
+        else:
+            return {
+                'domain': {
+                    'doctor_id': []
+                }
+            }
     @api.onchange('service_type')
     def _onchange_service_type(self):
         """Reset fields when service type changes"""
@@ -174,41 +194,8 @@ class ClinicMCH(models.Model):
         for field in fields_to_reset.get(self.service_type, []):
             self[field] = False
 
-    # @api.model_create_multi
-    # def create(self, vals_list):
-    #     for vals in vals_list:
-    #         if not vals.get('ref') or vals.get('ref') == '/':
-    #             department_id = vals.get('department_id')
-    #             if not department_id:
-    #                 raise ValueError(_('Department is required to generate visit ID.'))
-
-    #             department = self.env['clinic.department'].browse(department_id)
-    #             if not department:
-    #                 raise ValueError(_('Invalid department selected.'))
-
-    #             sequence_code = f'clinic.mch.{department.code}'
-    #             sequence = self.env['ir.sequence'].sudo().next_by_code(sequence_code)
-
-    #             if not sequence:
-    #                 # Fallback create sequence if not found
-    #                 self.env['ir.sequence'].sudo().create({
-    #                     'name': f'{department.name} MCH Visits',
-    #                     'code': sequence_code,
-    #                     'prefix': f'MCH/{department.code.upper()}/%(year)s/',
-    #                     'padding': 5,
-    #                     'number_next': 1,
-    #                 })
-    #                 sequence = self.env['ir.sequence'].sudo().next_by_code(sequence_code)
-
-    #             if not sequence:
-    #                 raise ValueError(_('Could not generate visit ID. Please check sequence configuration.'))
-
-    #             vals['ref'] = sequence
-
-    #     return super().create(vals_list)
-
     # ---------------------------
-    # State Machine Actions
+    # State Actions Button
     # ---------------------------
     def _expand_states(self, states, domain, order):
         return [key for key, val in type(self).state.selection]

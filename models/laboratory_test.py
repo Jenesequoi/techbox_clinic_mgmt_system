@@ -40,6 +40,34 @@ class ClinicLaboratoryTest(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Status', default='waiting', tracking=True, group_expand='_expand_states')
 
+    department_id = fields.Many2one(
+        'clinic.department',
+        string='Department',
+        required=True
+    )
+
+    # Doctor in charge field
+    doctor_id = fields.Many2one('hr.employee',string='Doctor In Charge',required=True,help="Select the doctor responsible for this MCH visit")
+
+    @api.onchange('department_id')
+    def _onchange_department_id(self):
+        """Reset doctor when department changes and filter doctors"""
+        self.doctor_id = False
+        
+        # Return domain to filter employees by department
+        if self.department_id:
+            return {
+                'domain': {
+                    'doctor_id': [('department_id', '=', self.department_id.id)]
+                }
+            }
+        else:
+            return {
+                'domain': {
+                    'doctor_id': []
+                }
+            }
+
      # Button Actions
     # ---------------------------
     def _expand_states(self, states, domain, order):

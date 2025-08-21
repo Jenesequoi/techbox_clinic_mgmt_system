@@ -175,6 +175,7 @@
                 <!-- Basic search fields -->
                 <field name="patient_id" string="Patient"/>
                 <field name="reception_id" string="Reception Ref"/>
+                <field name="doctor_id" string="Doctor"/>
 
                 <!-- Filters for service_type -->
                 <filter string="Antenatal" name="anc" domain="[('service_type', '=', 'antenatal')]"/>
@@ -193,6 +194,7 @@
                     <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
                     <filter string="Reception" name="group_by_reception" context="{'group_by': 'reception_id'}"/>
                     <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
+                    <filter string="Doctor" name="group_by_doctor" context="{'group_by': 'doctor_id'}"/>
                 </group>
             </search>
         </field>
