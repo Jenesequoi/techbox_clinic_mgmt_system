@@ -68,6 +68,7 @@ class ClinicLaboratoryTest(models.Model):
                 }
             }
 
+
      # Button Actions
     # ---------------------------
     def _expand_states(self, states, domain, order):

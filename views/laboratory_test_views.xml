@@ -79,6 +79,7 @@
                 <field name="reception_id"/>
                 <field name="patient_id"/>
                 <field name="test_type"/>
+                <field name="doctor_id" string="Doctor"/>
 
                 <!-- Status filters -->
                 <separator/>
@@ -99,6 +100,7 @@
                     <filter string="Test Type" name="group_by_test_type" context="{'group_by':'test_type'}"/>
                     <filter string="Date" name="group_by_date" context="{'group_by':'date:day'}"/>
                     <filter string="Patient" name="group_by_patient" context="{'group_by':'patient_id'}"/>
+                    <filter string="Doctor" name="group_by_doctor" context="{'group_by': 'doctor_id'}"/>
                 </group>
             </search>
         </field>

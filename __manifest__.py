@@ -8,7 +8,8 @@
     'category': 'Healthcare',
     'depends': [
         'base', 
-        'mail', 
+        'mail',
+        'hr',
     ],
     'data': [
         'security/clinic_security.xml',
