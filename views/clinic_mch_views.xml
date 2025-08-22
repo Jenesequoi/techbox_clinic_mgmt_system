@@ -29,6 +29,8 @@
                         <group>
                             <field name="service_type"/>
                             <field name="next_visit"/>
+                            <field name="doctor_id"/>
+
                         </group>
                     </group>
 
@@ -162,6 +164,8 @@
                 <field name="fp_method" invisible="service_type != 'family_planning'"/>
                 <field name="immunization_type" invisible="service_type != 'immunization'"/>
                 <field name="next_visit"/>
+                <field name="doctor_id"/>
+
             </tree>
         </field>
     </record>
@@ -175,7 +179,7 @@
                 <!-- Basic search fields -->
                 <field name="patient_id" string="Patient"/>
                 <field name="reception_id" string="Reception Ref"/>
-                <field name="doctor_id" string="Doctor"/>
+                <field name="doctor_id" string="Doctor"/>                <field name="doctor_id" string="Doctor"/>
 
                 <!-- Filters for service_type -->
                 <filter string="Antenatal" name="anc" domain="[('service_type', '=', 'antenatal')]"/>
