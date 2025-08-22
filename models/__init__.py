@@ -6,3 +6,4 @@ from . import clinic_prescription
 from . import pharmacy_dispense
 from . import clinic_mch
 from . import clinic_consultancy
+from . import imaging  
