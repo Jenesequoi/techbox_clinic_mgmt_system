@@ -15,3 +15,4 @@ access_clinic_consultancy_admin,clinic.consultancy.admin,model_clinic_consultanc
 access_clinic_consultancy_lab,clinic.consultancy.lab,model_clinic_consultancy,group_clinic_laboratory_technician,1,1,0,0
 access_clinic_consultancy_pharm,clinic.consultancy.pharm,model_clinic_consultancy,group_clinic_pharmacist,1,1,0,0
 access_clinic_laboratory_test_user,access.clinic.laboratory.test.user,model_clinic_laboratory_test,base.group_user,1,1,1,1
+access_clinic_patient_user,access.clinic.patient.user,model_clinic_patient,base.group_user,1,1,1,1
