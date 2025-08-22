@@ -179,7 +179,8 @@
                 <!-- Basic search fields -->
                 <field name="patient_id" string="Patient"/>
                 <field name="reception_id" string="Reception Ref"/>
-                <field name="doctor_id" string="Doctor"/>
+                <field name="doctor_id" string="Doctor"/>                <field name="doctor_id" string="Doctor"/>
+
                 <!-- Filters for service_type -->
                 <filter string="Antenatal" name="anc" domain="[('service_type', '=', 'antenatal')]"/>
                 <filter string="Postnatal" name="postnatal" domain="[('service_type', '=', 'postnatal')]"/>
