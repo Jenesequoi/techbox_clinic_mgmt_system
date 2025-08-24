@@ -15,6 +15,13 @@ class ClinicDepartment(models.Model):
     today_appointment_count = fields.Integer(compute='_compute_appointment_count', string='Today\'s Appointments')
     waiting_count = fields.Integer(compute='_compute_appointment_count', string='Waiting Count')
     completion_rate = fields.Float(compute='_compute_appointment_count', string='Completion Rate')
+    service_price = fields.Float(string='Service Price', required=True)
+    service_product_id = fields.Many2one(
+        'product.product', 
+        string='Service Product',
+        required=True,
+        domain=[('type', '=', 'service')]
+    )
 
     @api.depends('code')
     def _compute_appointment_count(self):

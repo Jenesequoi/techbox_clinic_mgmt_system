@@ -9,6 +9,7 @@
     'depends': [
         'base',
         'mail',
+        'hr',  # added from testing
     ],
     'data': [
         # Security
@@ -20,8 +21,8 @@
         'views/clinic_reception_views.xml',
         'views/clinic_consultancy_views.xml',
         'views/clinic_mch_views.xml',
-        # 'views/laboratory_test_views.xml',  # Uncomment when ready
-        'views/imaging_views.xml',   # Imaging includes its own submenu
+        'views/laboratory_test_views.xml',   # keep from testing
+        'views/imaging_views.xml',           # keep from Imaging branch
         'views/clinic_prescription_views.xml',
         'views/pharmacy_queue_views.xml',
         'views/pharmacy_dispense_views.xml',
