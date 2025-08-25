@@ -17,6 +17,10 @@
                     <field name="state" widget="statusbar" 
                         options="{'clickable': '1'}" 
                         statusbar_visible="waiting,in_progress,completed"/>
+
+                    <button name="action_create_invoice" string="Create Invoice" type="object"
+                            class="btn-primary"/>
+
                         <!-- Invoice buttons -->
                     <!-- <button name="action_create_bill" string="Create Bill" type="object" 
                             class="btn-primary" 
@@ -125,3 +129,7 @@
               parent="menu_clinic_laboratory_root"
               action="action_clinic_laboratory_test"/>
 </odoo>
+
+
+
+

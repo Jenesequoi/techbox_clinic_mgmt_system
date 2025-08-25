@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 class ClinicLaboratoryTest(models.Model):
     _name='clinic.laboratory.test'
@@ -89,5 +90,60 @@ class ClinicLaboratoryTest(models.Model):
     def action_reset(self):
         for rec in self:
             rec.state = 'waiting'
-    
-    
+
+    # ---------- Create Invoice ----------
+    def action_create_invoice(self):
+        self.ensure_one()
+
+        if not self.patient_id:
+            raise UserError(_("No patient linked to this lab test."))
+
+        if not self.department_id.service_product_id or not self.department_id.service_price:
+            raise UserError(_("Department is missing Service Product or Price."))
+
+        invoice_line_vals = {
+            'name': f'Lab Test - {self.test_type} ({self.department_id.name})',
+            'quantity': 1.0,
+            'price_unit': self.department_id.service_price,
+            'product_id': self.department_id.service_product_id.id,
+        }
+
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.patient_id.id,  # Patient as customer
+            'invoice_origin': self.name or f'Lab Test #{self.id}',
+            'invoice_line_ids': [(0, 0, invoice_line_vals)],
+        }
+
+        invoice = self.env['account.move'].create(invoice_vals)
+
+        return {
+            'name': _('Customer Invoice'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'form',
+            'res_id': invoice.id,
+        }
+
+        def _get_test_price(self):
+            """Return the price for the laboratory test based on test_type or department."""
+            self.ensure_one()
+            # Example: Use department service price as a fallback
+            price = self.department_id.service_price or 0.0
+            
+            # Optional: Define prices per test type
+            test_price_map = {
+                'cbc': 50.0,
+                'blood_sugar': 30.0,
+                'malaria': 40.0,
+                'hiv': 60.0,
+                'urinalysis': 35.0,
+                'stool_analysis': 45.0,
+                'pregnancy': 25.0,
+                'liver_function': 70.0,
+                'kidney_function': 65.0,
+                'typhoid': 55.0,
+                'cholesterol': 50.0,
+                'other': self.department_id.service_price or 0.0,
+            }
+            return test_price_map.get(self.test_type, price)
