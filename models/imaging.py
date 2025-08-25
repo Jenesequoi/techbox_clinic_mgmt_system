@@ -99,7 +99,7 @@ class ClinicImaging(models.Model):
     @api.model
     def create(self, vals):
         if vals.get('name', _('New')) == _('New'):
-            vals['name'] = self.env['ir.sequence'].next_by_code('clinic.imaging.request') or _('New')
+            vals['name'] = self.env['ir.sequence'].next_by_code('clinic.reception.imaging') or _('New')
         return super(ClinicImaging, self).create(vals)
 
     def action_mark_in_progress(self):
@@ -112,39 +112,50 @@ class ClinicImaging(models.Model):
         self.write({'status': 'cancelled'})
 
     def action_create_invoice(self):
-        """Create an invoice for the imaging study"""
-        for rec in self:
-            if rec.invoice_id:
-                raise UserError(_("An invoice is already linked to this imaging study."))
+        """Create an invoice for the imaging study (department-based service product & price)"""
+        self.ensure_one()
 
-            if not rec.patient_id:
-                raise UserError(_("No patient is linked to this imaging study."))
+        if self.invoice_id:
+            raise UserError(_("An invoice is already linked to this imaging study."))
 
-            # Find the partner (patient record must have res.partner link)
-            partner = rec.reception_id.patient_id.partner_id
-            if not partner:
-                raise UserError(_("Patient does not have a linked partner (customer record)."))
+        if not self.patient_id:
+            raise UserError(_("No patient is linked to this imaging study."))
 
-            # Get label for imaging type
-            imaging_label = dict(self._fields['imaging_type'].selection).get(rec.imaging_type)
+        # Get department from reception
+        department = self.reception_id.department_id
+        if not department:
+            raise UserError(_("No department linked to this reception."))
 
-            move_vals = {
-                'move_type': 'out_invoice',
-                'partner_id': partner.id,
-                'invoice_date': fields.Date.context_today(self),
-                'invoice_line_ids': [(0, 0, {
-                    'name': f"Imaging: {imaging_label} ({rec.body_part or 'N/A'})",
-                    'quantity': 1,
-                    'price_unit': rec.imaging_price,
-                })]
-            }
-            invoice = self.env['account.move'].create(move_vals)
-            rec.invoice_id = invoice.id
+        if not department.service_product_id or not department.service_price:
+            raise UserError(_("Department is missing service product or price."))
 
-            return {
-                'name': _('Invoice'),
-                'type': 'ir.actions.act_window',
-                'res_model': 'account.move',
-                'view_mode': 'form',
-                'res_id': invoice.id,
-            }
+        # Build invoice line
+        invoice_line_vals = {
+            'name': f"Imaging Service - {department.name} ({self.imaging_type.upper()} - {self.body_part or 'N/A'})",
+            'quantity': 1.0,
+            'price_unit': department.service_price,
+            'product_id': department.service_product_id.id,
+        }
+
+        # Build invoice
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.patient_id.partner_id.id,
+            'invoice_origin': self.name,
+            'invoice_line_ids': [(0, 0, invoice_line_vals)],
+            'payment_reference': self.name,
+        }
+        invoice = self.env['account.move'].create(invoice_vals)
+
+        # Link invoice back
+        self.invoice_id = invoice.id
+
+        return {
+            'name': _('Customer Invoice'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'account.move',
+            'view_mode': 'form',
+            'res_id': invoice.id,
+            'view_id': False,
+            'views': [(False, 'form')],
+        }
