@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Form View -->
     <record id="view_mch_form" model="ir.ui.view">
@@ -7,35 +6,44 @@
         <field name="arch" type="xml">
             <form string="Mother and Child Healthcare Record">
                 <header>
-                     <button name="action_start" string="Start" type="object" 
+                    <button name="action_start" string="Start" type="object" 
                             class="btn-primary" invisible="state != 'waiting'"/>
-                        <button name="action_complete" string="Complete" type="object" 
-                                class="btn-primary" invisible="state != 'in_progress'"/>
-                        <button name="action_cancel" string="Cancel" type="object" 
-                                invisible="state in ('completed', 'cancelled')"/>
-                        <button name="action_reset" string="Reset to Waiting" type="object" 
-                                invisible="state not in ('cancelled', 'completed')"/>
-                        <field name="state" widget="statusbar" 
-                            options="{'clickable': '1'}" 
-                            statusbar_visible="waiting,in_progress,completed"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            class="btn-primary" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            class="btn-secondary" invisible="state in ('completed', 'cancelled')"/>
+                    <button name="action_reset" string="Reset to Waiting" type="object" 
+                            class="btn-secondary" invisible="state not in ('cancelled', 'completed')"/>
+                    <button name="action_create_invoice" string="Create Invoice" type="object" 
+                            class="btn-primary" invisible="is_billed or state != 'completed'"/>
+                    <button name="action_view_invoice" string="View Invoice" type="object" 
+                            class="btn-secondary" invisible="not is_billed"/>
+                    <field name="state" widget="statusbar" 
+                           options="{'clickable': '1'}" 
+                           statusbar_visible="waiting,in_progress,completed"/>
                 </header>
                 <sheet>
+                    <!-- <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div> -->
                     <group>
                         <group>
-                            <field name="reception_id"/>
-                            <field name="patient_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="reception_id" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="patient_id" readonly="1"/>
                             <field name="date"/>
+                            <field name="service_type"/>
                         </group>
                         <group>
-                            <field name="service_type"/>
+                            <field name="department_id" options="{'no_create': True}"/>
+                            <field name="doctor_id" options="{'no_create': True}"/>
                             <field name="next_visit"/>
-                            <field name="doctor_id"/>
-
+                            <field name="is_billed" invisible="1"/>
                         </group>
                     </group>
-
                     <notebook>
-                        <!-- 1. Family Planning Page -->
+                        <!-- Family Planning Page -->
                         <page string="Family Planning" invisible="service_type != 'family_planning'">
                             <group>
                                 <group string="Services Provided">
@@ -49,7 +57,7 @@
                             </group>
                         </page>
 
-                        <!-- 2. Preconceptual Care Page -->
+                        <!-- Preconceptual Care Page -->
                         <page string="Preconceptual Care" invisible="service_type != 'preconceptual'">
                             <group>
                                 <group string="Medical History">
@@ -72,7 +80,7 @@
                             </group>
                         </page>
 
-                        <!-- 3. Antenatal Care Page -->
+                        <!-- Antenatal Care Page -->
                         <page string="Antenatal Care" invisible="service_type != 'antenatal'">
                             <group>
                                 <group string="Visit Details">
@@ -94,7 +102,7 @@
                             <field name="anc_complications"/>
                         </page>
 
-                        <!-- 4. Immunization Page -->
+                        <!-- Immunization Page -->
                         <page string="Immunization" invisible="service_type != 'immunization'">
                             <group>
                                 <group string="Vaccine Details">
@@ -113,7 +121,7 @@
                             </group>
                         </page>
 
-                        <!-- 5. Postnatal Care Page -->
+                        <!-- Postnatal Care Page -->
                         <page string="Postnatal Care" invisible="service_type != 'postnatal'">
                             <group>
                                 <group string="Mother's Health">
@@ -136,7 +144,7 @@
                             </group>
                         </page>
 
-                        <!-- 6. Clinical Notes Page - Always visible -->
+                        <!-- Clinical Notes Page -->
                         <page string="Clinical Notes">
                             <field name="notes"/>
                             <field name="follow_up_instructions"/>
@@ -157,15 +165,18 @@
         <field name="name">clinic.mch.tree</field>
         <field name="model">clinic.mch</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state=='waiting'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'">
+                <field name="name"/>
                 <field name="date"/>
                 <field name="patient_id"/>
                 <field name="service_type"/>
+                <field name="department_id"/>
+                <field name="doctor_id"/>
+                <field name="state"/>
+                <field name="is_billed"/>
                 <field name="fp_method" invisible="service_type != 'family_planning'"/>
                 <field name="immunization_type" invisible="service_type != 'immunization'"/>
                 <field name="next_visit"/>
-                <field name="doctor_id"/>
-
             </tree>
         </field>
     </record>
@@ -176,29 +187,37 @@
         <field name="model">clinic.mch</field>
         <field name="arch" type="xml">
             <search string="Mother and Child Healthcare">
-                <!-- Basic search fields -->
+                <field name="name"/>
                 <field name="patient_id" string="Patient"/>
                 <field name="reception_id" string="Reception Ref"/>
-                <field name="doctor_id" string="Doctor"/>                <field name="doctor_id" string="Doctor"/>
-
-                <!-- Filters for service_type -->
+                <field name="doctor_id" string="Doctor"/>
+                <field name="department_id"/>
+                <field name="service_type"/>
+                <separator/>
+                <filter string="Waiting" name="status_waiting" domain="[('state','=','waiting')]"/>
+                <filter string="In Progress" name="status_in_progress" domain="[('state','=','in_progress')]"/>
+                <filter string="Completed" name="status_completed" domain="[('state','=','completed')]"/>
+                <filter string="Cancelled" name="status_cancelled" domain="[('state','=','cancelled')]"/>
+                <filter string="Billed" name="billed" domain="[('is_billed','=',True)]"/>
+                <filter string="Not Billed" name="not_billed" domain="[('is_billed','=',False)]"/>
+                <separator/>
                 <filter string="Antenatal" name="anc" domain="[('service_type', '=', 'antenatal')]"/>
                 <filter string="Postnatal" name="postnatal" domain="[('service_type', '=', 'postnatal')]"/>
                 <filter string="Family Planning" name="family_planning" domain="[('service_type', '=', 'family_planning')]"/>
                 <filter string="Preconceptual" name="preconceptual" domain="[('service_type', '=', 'preconceptual')]"/>
                 <filter string="Immunization" name="immunization" domain="[('service_type', '=', 'immunization')]"/>
-
-                <!-- <searchpanel>
-                    <field name="department_id" enable_counters="1" expand="1"/>
-                    <field name="state" enable_counters="1" expand="1"/>
-                </searchpanel> -->
-
-                <!-- Group By -->
+                <separator/>
+                <filter string="Today" name="today" domain="[('date','=',context_today())]"/>
+                <filter string="This Week" name="week" domain="[('date','>=',(context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="This Month" name="month" domain="[('date','>=',(context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
                 <group expand="1" string="Group By">
                     <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
                     <filter string="Reception" name="group_by_reception" context="{'group_by': 'reception_id'}"/>
                     <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by': 'department_id'}"/>
                     <filter string="Doctor" name="group_by_doctor" context="{'group_by': 'doctor_id'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by': 'state'}"/>
+                    <filter string="Billed" name="group_by_billed" context="{'group_by': 'is_billed'}"/>
                 </group>
             </search>
         </field>
@@ -215,6 +234,11 @@
                 'search_default_today': 1,
                 'default_date': context_today()
             }
+        </field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Maternal and Child Healthcare record
+            </p>
         </field>
     </record>
 </odoo>

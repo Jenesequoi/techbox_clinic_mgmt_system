@@ -1,5 +1,8 @@
 from odoo import models, fields, api, _
-from datetime import timedelta
+from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
 
 class ClinicMCH(models.Model):
     _name = 'clinic.mch'
@@ -8,20 +11,19 @@ class ClinicMCH(models.Model):
     _order = 'date desc'
 
     # Basic Information
+    name = fields.Char(string='MCH Reference', default=lambda self: _('New'), copy=False, readonly=True)
     reception_id = fields.Many2one(
         'clinic.reception',
         string='Reception Reference',
         required=True,
-        ondelete='cascade'
+        ondelete='restrict'
     )
-
     department_id = fields.Many2one(
         'clinic.department',
         string='Department',
-        required=True
+        required=True,
+        ondelete='restrict'
     )
-
-
     patient_id = fields.Many2one(
         'res.partner',
         string='Patient',
@@ -29,8 +31,12 @@ class ClinicMCH(models.Model):
         store=True,
         readonly=True
     )
-    # Doctor in charge field
-    doctor_id = fields.Many2one('hr.employee',string='Doctor In Charge',required=True,help="Select the doctor responsible for this MCH visit")
+    doctor_id = fields.Many2one(
+        'hr.employee',
+        string='Doctor In Charge',
+        required=True,
+        help="Select the doctor responsible for this MCH visit"
+    )
     date = fields.Date(
         string='Visit Date',
         default=fields.Date.context_today,
@@ -43,17 +49,15 @@ class ClinicMCH(models.Model):
         ('immunization', 'Immunization'),
         ('postnatal', 'Postnatal Care')
     ], string='Service Type', required=True, tracking=True)
-
-    # state
     state = fields.Selection([
         ('waiting', 'Waiting'),
         ('in_progress', 'In Progress'),
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled')
     ], string='Status', default='waiting', tracking=True, group_expand='_expand_states')
+    is_billed = fields.Boolean(string="Is Billed", default=False, readonly=True)
 
-
-    # ========== Family Planning Fields ==========
+    # Family Planning Fields
     fp_method = fields.Selection([
         ('none', 'None'),
         ('implant', 'Implant'),
@@ -67,7 +71,7 @@ class ClinicMCH(models.Model):
     fp_advice_details = fields.Text(string='Counseling Details')
     fp_next_visit = fields.Date(string='Next Follow-up')
 
-    # ========== Preconceptual Care Fields ==========
+    # Preconceptual Care Fields
     pc_genetic_history = fields.Text(string='Genetic/Family History')
     pc_reproductive_history = fields.Text(string='Reproductive History')
     pc_environmental_hazards = fields.Text(string='Environmental Hazards')
@@ -84,7 +88,7 @@ class ClinicMCH(models.Model):
     pc_violence_screening = fields.Boolean(string='IPV Screening Done')
     pc_mental_health = fields.Text(string='Mental Health Notes')
 
-    # ========== Antenatal Care Fields ==========
+    # Antenatal Care Fields
     anc_visit_number = fields.Selection([
         ('1', 'First Contact'),
         ('2', '12-20 Weeks'),
@@ -106,7 +110,7 @@ class ClinicMCH(models.Model):
     anc_education_given = fields.Text(string='Health Education Provided')
     anc_complications = fields.Text(string='Complications Identified')
 
-    # ========== Immunization Fields ==========
+    # Immunization Fields
     immunization_type = fields.Selection([
         ('bcg', 'BCG'),
         ('opv', 'OPV'),
@@ -131,7 +135,7 @@ class ClinicMCH(models.Model):
     immunization_reaction = fields.Text(string='Adverse Reactions')
     immunization_reaction_management = fields.Text(string='Reaction Management')
 
-    # ========== Postnatal Care Fields ==========
+    # Postnatal Care Fields
     pnc_visit_day = fields.Selection([
         ('0', 'Within 24 hours'),
         ('3', 'Day 3'),
@@ -162,56 +166,144 @@ class ClinicMCH(models.Model):
     next_visit = fields.Date(string='Next Appointment')
     follow_up_instructions = fields.Text(string='Follow-up Instructions')
 
+    @api.model
+    def create(self, vals):
+        """Generate a unique reference for the MCH record"""
+        if vals.get('name', _('New')) == _('New'):
+            vals['name'] = self.env['ir.sequence'].next_by_code('clinic.mch') or _('New')
+        return super(ClinicMCH, self).create(vals)
+
     @api.onchange('department_id')
     def _onchange_department_id(self):
         """Reset doctor when department changes and filter doctors"""
         self.doctor_id = False
-        
-        # Return domain to filter employees by department
         if self.department_id:
             return {
                 'domain': {
                     'doctor_id': [('department_id', '=', self.department_id.id)]
                 }
             }
-        else:
-            return {
-                'domain': {
-                    'doctor_id': []
-                }
-            }
+        return {'domain': {'doctor_id': []}}
+
     @api.onchange('service_type')
     def _onchange_service_type(self):
-        """Reset fields when service type changes"""
+        """Reset service-specific fields when service type changes"""
         fields_to_reset = {
-            'family_planning': ['fp_method', 'fp_advice_given', 'fp_advice_details'],
-            'preconceptual': ['pc_genetic_history', 'pc_reproductive_history'],
-            'antenatal': ['anc_visit_number', 'anc_bp'],
-            'immunization': ['immunization_type', 'immunization_dose'],
-            'postnatal': ['pnc_visit_day', 'pnc_mother_condition']
+            'family_planning': ['fp_method', 'fp_advice_given', 'fp_advice_details', 'fp_next_visit'],
+            'preconceptual': ['pc_genetic_history', 'pc_reproductive_history', 'pc_environmental_hazards', 
+                             'pc_special_diet', 'pc_weight', 'pc_physical_activity', 'pc_substance_abuse', 
+                             'pc_medication', 'pc_oral_health', 'pc_violence_screening', 'pc_mental_health'],
+            'antenatal': ['anc_visit_number', 'anc_bp', 'anc_weight', 'anc_height', 'anc_fundal_height', 
+                          'anc_fetal_heart_rate', 'anc_urine_test', 'anc_blood_test', 'anc_ultrasound', 
+                          'anc_education_given', 'anc_complications'],
+            'immunization': ['immunization_type', 'immunization_dose', 'immunization_date', 
+                            'immunization_next_date', 'immunization_lot_number', 'immunization_site', 
+                            'immunization_provider', 'immunization_reaction', 'immunization_reaction_management'],
+            'postnatal': ['pnc_visit_day', 'pnc_mother_condition', 'pnc_mother_complications', 
+                          'pnc_baby_condition', 'pnc_baby_weight', 'pnc_baby_feeding', 'pnc_breastfeeding', 
+                          'pnc_breastfeeding_issues', 'pnc_breastfeeding_support', 'pnc_family_planning', 
+                          'pnc_next_visit']
         }
-        
         for field in fields_to_reset.get(self.service_type, []):
             self[field] = False
 
-    # ---------------------------
-    # State Actions Button
-    # ---------------------------
     def _expand_states(self, states, domain, order):
+        """Expand state selection for group_by"""
         return [key for key, val in type(self).state.selection]
 
     def action_start(self):
+        """Set state to In Progress"""
         for rec in self:
-            rec.state = 'in_progress'
+            if rec.state == 'waiting':
+                rec.state = 'in_progress'
 
     def action_complete(self):
+        """Set state to Completed"""
         for rec in self:
-            rec.state = 'completed'
+            if rec.state == 'in_progress':
+                rec.state = 'completed'
 
     def action_cancel(self):
+        """Set state to Cancelled"""
         for rec in self:
-            rec.state = 'cancelled'
+            if rec.state not in ('completed', 'cancelled'):
+                rec.state = 'cancelled'
 
     def action_reset(self):
+        """Reset state to Waiting"""
         for rec in self:
-            rec.state = 'waiting'
+            if rec.state in ('cancelled', 'completed'):
+                rec.state = 'waiting'
+
+    def action_create_invoice(self):
+        """Create an invoice for the MCH visit using department's service product and price"""
+        self.ensure_one()
+        
+        # Log for debugging
+        _logger.info("Creating invoice for MCH ID: %s, Reference: %s, Department: %s, Service Product: %s, Service Price: %s",
+                     self.id, self.name, self.department_id.name or 'None',
+                     self.department_id.service_product_id.name or 'None',
+                     self.department_id.service_price or 0.0)
+
+        # Validate required fields
+        if not self.patient_id:
+            raise UserError(_("No patient is linked to this MCH visit. Please set a valid reception reference."))
+        if not self.department_id:
+            raise UserError(_("No department is selected for this MCH visit."))
+        if not self.department_id.service_product_id:
+            raise UserError(_("The department '%s' is missing a service product.") % self.department_id.name)
+        if not self.department_id.service_price:
+            raise UserError(_("The department '%s' is missing a service price.") % self.department_id.name)
+        if not self.department_id.service_product_id.active:
+            raise UserError(_("The service product '%s' is inactive.") % self.department_id.service_product_id.name)
+
+        # Prepare invoice line
+        invoice_line_vals = {
+            'name': f'MCH Visit - {self.get_service_type_label()} ({self.department_id.name})',
+            'quantity': 1.0,
+            'price_unit': self.department_id.service_price,
+            'product_id': self.department_id.service_product_id.id,
+        }
+
+        # Prepare invoice
+        invoice_vals = {
+            'move_type': 'out_invoice',
+            'partner_id': self.patient_id.id,
+            'invoice_origin': self.name or f'MCH #{self.id}',
+            'invoice_line_ids': [(0, 0, invoice_line_vals)],
+            'invoice_date': fields.Date.today(),
+        }
+
+        # Create invoice
+        invoice = self.env['account.move'].sudo().create(invoice_vals)
+        self.is_billed = True
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Invoice Created'),
+                'message': _('Invoice %s has been created for this MCH visit.') % invoice.name,
+                'type': 'success',
+                'sticky': False,
+            }
+        }
+
+    def action_view_invoice(self):
+        """View the invoice associated with this MCH visit"""
+        self.ensure_one()
+        invoice = self.env['account.move'].search([('invoice_origin', '=', self.name or f'MCH #{self.id}')], limit=1)
+        if invoice:
+            return {
+                'name': _('Customer Invoice'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'account.move',
+                'view_mode': 'form',
+                'res_id': invoice.id,
+                'target': 'current',
+            }
+        raise UserError(_("No invoice found for this MCH visit."))
+
+    def get_service_type_label(self):
+        """Return the human-readable label for the service type"""
+        return dict(self.fields_get(['service_type'])['service_type']['selection']).get(self.service_type, 'Unknown')
