@@ -279,12 +279,14 @@ class ClinicMCH(models.Model):
         self.is_billed = True
 
         return {
-            'name': _('Customer Invoice'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'account.move',
-            'view_mode': 'form',
-            'res_id': invoice.id,
-            'target': 'current',
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Invoice Created'),
+                'message': _('Invoice %s has been created for this MCH visit.') % invoice.name,
+                'type': 'success',
+                'sticky': False,
+            }
         }
 
     def action_view_invoice(self):
