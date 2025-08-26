@@ -32,7 +32,6 @@
         'views/pharmacy_queue_views.xml',
         'views/pharmacy_dispense_views.xml',
         'views/clinic_department_views.xml',
-
         # Sequences (must load before menus so references work)
         'data/ir_sequence_data.xml',
 
