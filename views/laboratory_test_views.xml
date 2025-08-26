@@ -11,39 +11,40 @@
                     <button name="action_complete" string="Complete" type="object" 
                             class="btn-primary" invisible="state != 'in_progress'"/>
                     <button name="action_cancel" string="Cancel" type="object" 
-                            invisible="state in ('completed', 'cancelled')"/>
+                            class="btn-secondary" invisible="state in ('completed', 'cancelled')"/>
                     <button name="action_reset" string="Reset to Waiting" type="object" 
-                            invisible="state not in ('cancelled', 'completed')"/>
-                    <field name="state" widget="statusbar" 
-                        options="{'clickable': '1'}" 
-                        statusbar_visible="waiting,in_progress,completed"/>
-                        <!-- Invoice buttons -->
-                    <!-- <button name="action_create_bill" string="Create Bill" type="object" 
-                            class="btn-primary" 
-                            invisible="is_billed or state != 'completed'"/>
+                            class="btn-secondary" invisible="state not in ('cancelled', 'completed')"/>
+                    <button name="action_create_invoice" string="Create Invoice" type="object" 
+                            class="btn-primary" invisible="is_billed or state != 'completed'"/>
                     <button name="action_view_invoice" string="View Invoice" type="object" 
-                            class="btn-secondary" 
-                            invisible="not is_billed"/>
-                    
+                            class="btn-secondary" invisible="not is_billed"/>
                     <field name="state" widget="statusbar" 
-                        options="{'clickable': '1'}" 
-                        statusbar_visible="waiting,in_progress,completed"/> -->
+                           options="{'clickable': '1'}" 
+                           statusbar_visible="waiting,in_progress,completed"/>
                 </header>
                 <sheet>
+                    <!-- <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div> -->
                     <group>
                         <group>
-                            <field name="reception_id"/>
+                            <field name="reception_id" options="{'no_create': True}"/>
                             <field name="patient_id" readonly="1"/>
                             <field name="date"/>
                             <field name="test_type"/>
-                            <field name="doctor_id" string="Doctor"/>
                         </group>
                         <group>
-                            <field name="description" placeholder="Enter test details or remarks..."/>
+                            <field name="department_id" options="{'no_create': True}"/>
+                            <field name="doctor_id" string="Doctor" options="{'no_create': True}"/>
+                            <field name="is_billed" invisible="1"/>
                         </group>
                     </group>
+                    <group string="Remarks">
+                        <field name="description" placeholder="Enter test details or remarks..."/>
+                    </group>
                 </sheet>
-
                 <div class="oe_chatter">
                     <field name="message_follower_ids"/>
                     <field name="activity_ids"/>
@@ -58,13 +59,16 @@
         <field name="name">clinic.laboratory.test.tree</field>
         <field name="model">clinic.laboratory.test</field>
         <field name="arch" type="xml">
-            <tree>
+            <tree decoration-info="state=='waiting'" decoration-success="state=='completed'" decoration-muted="state=='cancelled'">
+                <field name="name"/>
                 <field name="reception_id"/>
                 <field name="patient_id"/>
                 <field name="date"/>
                 <field name="test_type"/>
-                <field name="status"/>
+                <field name="state"/>
+                <field name="department_id"/>
                 <field name="doctor_id" string="Doctor"/>
+                <field name="is_billed"/>
             </tree>
         </field>
     </record>
@@ -75,32 +79,31 @@
         <field name="model">clinic.laboratory.test</field>
         <field name="arch" type="xml">
             <search>
-                <!-- Basic search fields -->
+                <field name="name"/>
                 <field name="reception_id"/>
                 <field name="patient_id"/>
                 <field name="test_type"/>
+                <field name="department_id"/>
                 <field name="doctor_id" string="Doctor"/>
-
-                <!-- Status filters -->
                 <separator/>
-                <filter name="status_waiting" string="Waiting" domain="[('status','=','waiting')]"/>
-                <filter name="status_in_progress" string="In Progress" domain="[('status','=','in_progress')]"/>
-                <filter name="status_completed" string="Completed" domain="[('status','=','completed')]"/>
-                <filter name="status_cancelled" string="Cancelled" domain="[('status','=','cancelled')]"/>
-
-                <!-- Date filters -->
+                <filter name="status_waiting" string="Waiting" domain="[('state','=','waiting')]"/>
+                <filter name="status_in_progress" string="In Progress" domain="[('state','=','in_progress')]"/>
+                <filter name="status_completed" string="Completed" domain="[('state','=','completed')]"/>
+                <filter name="status_cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
+                <filter name="billed" string="Billed" domain="[('is_billed','=',True)]"/>
+                <filter name="not_billed" string="Not Billed" domain="[('is_billed','=',False)]"/>
                 <separator/>
                 <filter name="today" string="Today" domain="[('date','=',context_today())]"/>
                 <filter name="week" string="This Week" domain="[('date','>=',(context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <filter name="month" string="This Month" domain="[('date','>=',(context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
-
-                <!-- Group By options -->
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_by_status" context="{'group_by':'status'}"/>
+                    <filter string="Status" name="group_by_status" context="{'group_by':'state'}"/>
                     <filter string="Test Type" name="group_by_test_type" context="{'group_by':'test_type'}"/>
                     <filter string="Date" name="group_by_date" context="{'group_by':'date:day'}"/>
                     <filter string="Patient" name="group_by_patient" context="{'group_by':'patient_id'}"/>
-                    <filter string="Doctor" name="group_by_doctor" context="{'group_by': 'doctor_id'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Doctor" name="group_by_doctor" context="{'group_by':'doctor_id'}"/>
+                    <filter string="Billed" name="group_by_billed" context="{'group_by':'is_billed'}"/>
                 </group>
             </search>
         </field>
