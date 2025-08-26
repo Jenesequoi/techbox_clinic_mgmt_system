@@ -1,46 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Action first -->
-    <record id="action_clinic_consultancy" model="ir.actions.act_window">
-        <field name="name">Consultancy Sessions</field>
-        <field name="res_model">clinic.consultancy</field>
-        <field name="view_mode">tree,form</field>
-    </record>
+  <record id="view_clinic_consultancy_form" model="ir.ui.view">
+    <field name="name">clinic.consultancy.form</field>
+    <field name="model">clinic.consultancy</field>
+    <field name="arch" type="xml">
+      <form string="Consultancy">
+        <header>
+          <button name="action_start_consultation" type="object" string="Start Consultation"/>
+          <!--          <button name="action_complete_and_invoice" type="object" string="Complete & Invoice"
+          states="in_progress"/> -->
+          <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,done,invoiced" />
+        </header>
+        <sheet>
+          <group>
+            <field name="name" readonly="1" />
+            <field name="patient_id" />
+            <field name="doctor_id" />
+            <field name="date" />
+          </group>
+          <notebook>
+            <page string="Complaint">
+              <field name="complaint" />
+            </page>
+            <page string="Consultation Details">
+              <field name="consultation_details" />
+            </page>
+            <page string="Visit History">
+              <field name="visit_history" />
+            </page>
+            <page string="Medical Record">
+              <field name="medical_record" />
+            </page>
+          </notebook>
+        </sheet>
+      </form>
+    </field>
+  </record>
 
-    <!-- Menus
-    <menuitem id="menu_clinic_root" name="Clinic Consultancy" sequence="1"/>
-    <menuitem id="menu_clinic_consultancy" name="Consultancy Sessions"
-              parent="menu_clinic_root" action="action_clinic_consultancy"/> -->
+  <record id="view_clinic_consultancy_tree" model="ir.ui.view">
+    <field name="name">clinic.consultancy.tree</field>
+    <field name="model">clinic.consultancy</field>
+    <field name="arch" type="xml">
+      <tree string="Consultancies">
+        <field name="name" />
+        <field name="patient_id" />
+        <field name="doctor_id" />
+        <field name="date" />
+        <field name="state" />
+      </tree>
+    </field>
+  </record>
 
-    <!-- Tree View -->
-    <record id="view_clinic_consultancy_tree" model="ir.ui.view">
-        <field name="name">clinic.consultancy.tree</field>
-        <field name="model">clinic.consultancy</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="name"/>
-                <field name="patient_id"/>
-                <field name="doctor_id"/>
-                <field name="date"/>
-            </tree>
-        </field>
-    </record>
+  <!-- <menuitem id="menu_clinic_consultancy_root" name="Consultations"
+    parent="techbox_clinic_mgmt_system.menu_clinic_root" />
+  <act_window id="action_clinic_consultancy" name="Consultations" res_model="clinic.consultancy"
+    view_mode="tree,form" menu_id="menu_clinic_consultancy_root" /> -->
+  <record id="action_clinic_consultancy" model="ir.actions.act_window">
+    <field name="name">Consultancy Sessions</field>
+    <field name="res_model">clinic.consultancy</field>
+    <field name="view_mode">tree,form</field>
+  </record>
 
-    <!-- Form View -->
-    <record id="view_clinic_consultancy_form" model="ir.ui.view">
-        <field name="name">clinic.consultancy.form</field>
-        <field name="model">clinic.consultancy</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <group>
-                        <field name="name"/>
-                        <field name="date"/>
-                        <field name="patient_id"/>
-                        <field name="doctor_id"/>
-                        <field name="notes"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
 </odoo>
