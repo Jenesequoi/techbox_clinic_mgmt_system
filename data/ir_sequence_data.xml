@@ -98,14 +98,6 @@
             <field name="number_next">1</field>
         </record>
 
-        <record id="seq_clinic_consultancy" model="ir.sequence">
-            <field name="name">Clinic Consultancy</field>
-            <field name="code">clinic.consultancy</field>
-            <field name="prefix">CONS</field>
-            <field name="padding">4</field>
-        </record>
-
-
     </data>
 </odoo>
 
