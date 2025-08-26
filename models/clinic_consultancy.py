@@ -5,6 +5,7 @@ class ClinicConsultancy(models.Model):
     _description = 'Clinic Consultancy'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+<<<<<<< HEAD
     name = fields.Char(string='Consultancy No.', required=True, copy=False, readonly=True,
                        default=lambda self: self.env['ir.sequence'].next_by_code('clinic.reception.consultation'))
     patient_id = fields.Many2one('res.partner', string='Patient', required=True, tracking=True)
@@ -43,3 +44,10 @@ class ClinicConsultancy(models.Model):
                 record.invoice_id = invoice.id
             record.state = 'done'
         return True
+=======
+    name = fields.Char(string='Consultancy Name', required=True)
+    patient_id = fields.Many2one('res.partner', string='Patient')
+    doctor_id = fields.Many2one('res.users', string='Doctor')
+    date = fields.Date(string='Consultation Date')
+    notes = fields.Text(string='Notes')
+>>>>>>> origin/testing
