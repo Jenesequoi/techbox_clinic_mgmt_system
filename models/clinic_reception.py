@@ -160,39 +160,3 @@ class ClinicReception(models.Model):
                 'pivot_measures': ['appointments_count', 'completed_count']
             }
         }
-    
-    def create_invoice(self):
-        self.ensure_one()
-        
-        # Get the department's service details
-        department = self.department_id
-        
-        # Create invoice lines based on department service
-        invoice_line_vals = {
-            'name': f'Medical Service - {department.name}',
-            'quantity': 1.0,
-            'price_unit': department.service_price,  # Target department service_price
-            'product_id': department.service_product_id.id,  # Target department service_product_id
-        }
-        
-        # Create invoice
-        invoice_vals = {
-            'move_type': 'out_invoice',
-            'partner_id': self.patient_name.id,
-            'invoice_origin': self.ref,
-            'invoice_line_ids': [(0, 0, invoice_line_vals)],
-            'payment_reference': self.ref,
-        }
-        
-        # Create the invoice
-        invoice = self.env['account.move'].create(invoice_vals)
-        
-        return {
-            'name': _('Customer Invoice'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'account.move',
-            'view_mode': 'form',
-            'res_id': invoice.id,
-            'view_id': False,
-            'views': [(False, 'form')],
-        }

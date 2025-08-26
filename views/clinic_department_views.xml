@@ -6,14 +6,12 @@
         <field name="model">clinic.department</field>
         <field name="arch" type="xml">
             <tree string="Departments">
-                <field name="sequence" widget="handle" />
-                <field name="name" />
-                <field name="code" />
-                <field name="today_appointment_count" />
-                <field name="appointment_count" />
-                <field name="waiting_count" />
-                <field name="service_price" />
-                <field name="service_product_id" />
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="today_appointment_count"/>
+                <field name="appointment_count"/>
+                <field name="waiting_count"/>
             </tree>
         </field>
     </record>
@@ -26,38 +24,29 @@
             <form string="Department">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_appointments" type="object" class="oe_stat_button"
-                            icon="fa-calendar">
-                            <field name="appointment_count" widget="statinfo" string="Appointments" />
+                        <button name="action_view_appointments" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="appointment_count" widget="statinfo" string="Appointments"/>
                         </button>
-                        <button name="action_view_today_appointments" type="object"
-                            class="oe_stat_button" icon="fa-clock-o">
-                            <field name="today_appointment_count" widget="statinfo" string="Today" />
+                        <button name="action_view_today_appointments" type="object" class="oe_stat_button" icon="fa-clock-o">
+                            <field name="today_appointment_count" widget="statinfo" string="Today"/>
                         </button>
-                        <button name="action_department_stats" type="object" class="oe_stat_button"
-                            icon="fa-bar-chart">
+                        <button name="action_department_stats" type="object" class="oe_stat_button" icon="fa-bar-chart">
                             <span>Statistics</span>
                         </button>
                     </div>
                     <div class="oe_title">
-                        <label for="name" class="oe_edit_only" />
-                        <h1>
-                            <field name="name" placeholder="Department Name" />
-                        </h1>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="Department Name"/></h1>
                     </div>
                     <group>
                         <group>
-                            <field name="code" />
-                            <field name="sequence" />
-                            <field name="service_price" />
-                            <field name="service_product_id"
-                                domain="[('type', '=', 'service')]"
-                                context="{'default_type': 'service'}" />
+                            <field name="code"/>
+                            <field name="sequence"/>
                         </group>
                         <group>
-                            <field name="active" widget="boolean_toggle" />
-                            <field name="waiting_count" />
-                            <field name="completion_rate" widget="percentage" />
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="waiting_count"/>
+                            <field name="completion_rate" widget="percentage"/>
                         </group>
                     </group>
                 </sheet>
@@ -71,12 +60,12 @@
         <field name="model">clinic.department</field>
         <field name="arch" type="xml">
             <search string="Search Departments">
-                <field name="name" />
-                <field name="code" />
-                <filter string="Archived" name="inactive" domain="[('active', '=', False)]" />
+                <field name="name"/>
+                <field name="code"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
                 <group expand="0" string="Group By">
-                    <filter string="Status" name="group_by_status"
-                        context="{'group_by': 'active'}" />
+                    <filter string="Status" name="group_by_status" 
+                            context="{'group_by': 'active'}"/>
                 </group>
             </search>
         </field>
@@ -87,7 +76,7 @@
         <field name="name">Departments</field>
         <field name="res_model">clinic.department</field>
         <field name="view_mode">tree,form</field>
-        <field name="search_view_id" ref="view_clinic_department_search" />
+        <field name="search_view_id" ref="view_clinic_department_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
                 Create your first department!

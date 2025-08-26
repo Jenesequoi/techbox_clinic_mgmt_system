@@ -5,38 +5,20 @@
         <field name="model">clinic.laboratory.test</field>
         <field name="arch" type="xml">
             <form string="Laboratory Test">
-                <header>
-                    <button name="action_start" string="Start" type="object" 
-                            class="btn-primary" invisible="state != 'waiting'"/>
-                    <button name="action_complete" string="Complete" type="object" 
-                            class="btn-primary" invisible="state != 'in_progress'"/>
-                    <button name="action_cancel" string="Cancel" type="object" 
-                            invisible="state in ('completed', 'cancelled')"/>
-                    <button name="action_reset" string="Reset to Waiting" type="object" 
-                            invisible="state not in ('cancelled', 'completed')"/>
-                    <field name="state" widget="statusbar" 
-                        options="{'clickable': '1'}" 
-                        statusbar_visible="waiting,in_progress,completed"/>
-                        <!-- Invoice buttons -->
-                    <!-- <button name="action_create_bill" string="Create Bill" type="object" 
-                            class="btn-primary" 
-                            invisible="is_billed or state != 'completed'"/>
-                    <button name="action_view_invoice" string="View Invoice" type="object" 
-                            class="btn-secondary" 
-                            invisible="not is_billed"/>
-                    
-                    <field name="state" widget="statusbar" 
-                        options="{'clickable': '1'}" 
-                        statusbar_visible="waiting,in_progress,completed"/> -->
-                </header>
                 <sheet>
+                    <!-- Statusbar -->
+                    <header>
+                        <field name="status"
+                               widget="statusbar"
+                               statusbar_visible="waiting,in_progress,completed,cancelled"/>
+                    </header>
+
                     <group>
                         <group>
                             <field name="reception_id"/>
                             <field name="patient_id" readonly="1"/>
                             <field name="date"/>
                             <field name="test_type"/>
-                            <field name="doctor_id" string="Doctor"/>
                         </group>
                         <group>
                             <field name="description" placeholder="Enter test details or remarks..."/>
@@ -64,7 +46,6 @@
                 <field name="date"/>
                 <field name="test_type"/>
                 <field name="status"/>
-                <field name="doctor_id" string="Doctor"/>
             </tree>
         </field>
     </record>
@@ -79,7 +60,6 @@
                 <field name="reception_id"/>
                 <field name="patient_id"/>
                 <field name="test_type"/>
-                <field name="doctor_id" string="Doctor"/>
 
                 <!-- Status filters -->
                 <separator/>
@@ -100,7 +80,6 @@
                     <filter string="Test Type" name="group_by_test_type" context="{'group_by':'test_type'}"/>
                     <filter string="Date" name="group_by_date" context="{'group_by':'date:day'}"/>
                     <filter string="Patient" name="group_by_patient" context="{'group_by':'patient_id'}"/>
-                    <filter string="Doctor" name="group_by_doctor" context="{'group_by': 'doctor_id'}"/>
                 </group>
             </search>
         </field>

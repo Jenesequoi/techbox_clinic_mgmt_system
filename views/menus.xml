@@ -38,11 +38,6 @@
                 action="action_clinic_mch"
                 sequence="1" />
         </menuitem>
-        <menuitem
-             id="menu_clinic_imaging"
-             name="Imaging"
-             action="action_clinic_imaging"
-             sequence="4" />
 
          <menuitem
             id="menu_clinic_laboratory_root"
