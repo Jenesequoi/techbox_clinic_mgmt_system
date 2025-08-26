@@ -7,8 +7,17 @@
         <field name="arch" type="xml">
             <form string="Mother and Child Healthcare Record">
                 <header>
-                    <field name="service_type" widget="statusbar" 
-                           statusbar_visible="family_planning,preconceptual,antenatal,immunization,postnatal"/>
+                     <button name="action_start" string="Start" type="object" 
+                            class="btn-primary" invisible="state != 'waiting'"/>
+                        <button name="action_complete" string="Complete" type="object" 
+                                class="btn-primary" invisible="state != 'in_progress'"/>
+                        <button name="action_cancel" string="Cancel" type="object" 
+                                invisible="state in ('completed', 'cancelled')"/>
+                        <button name="action_reset" string="Reset to Waiting" type="object" 
+                                invisible="state not in ('cancelled', 'completed')"/>
+                        <field name="state" widget="statusbar" 
+                            options="{'clickable': '1'}" 
+                            statusbar_visible="waiting,in_progress,completed"/>
                 </header>
                 <sheet>
                     <group>
@@ -20,6 +29,8 @@
                         <group>
                             <field name="service_type"/>
                             <field name="next_visit"/>
+                            <field name="doctor_id"/>
+
                         </group>
                     </group>
 
@@ -153,6 +164,8 @@
                 <field name="fp_method" invisible="service_type != 'family_planning'"/>
                 <field name="immunization_type" invisible="service_type != 'immunization'"/>
                 <field name="next_visit"/>
+                <field name="doctor_id"/>
+
             </tree>
         </field>
     </record>
@@ -166,6 +179,7 @@
                 <!-- Basic search fields -->
                 <field name="patient_id" string="Patient"/>
                 <field name="reception_id" string="Reception Ref"/>
+                <field name="doctor_id" string="Doctor"/>                <field name="doctor_id" string="Doctor"/>
 
                 <!-- Filters for service_type -->
                 <filter string="Antenatal" name="anc" domain="[('service_type', '=', 'antenatal')]"/>
@@ -184,6 +198,7 @@
                     <filter string="Patient" name="group_by_patient" context="{'group_by': 'patient_id'}"/>
                     <filter string="Reception" name="group_by_reception" context="{'group_by': 'reception_id'}"/>
                     <filter string="Service Type" name="group_by_service_type" context="{'group_by': 'service_type'}"/>
+                    <filter string="Doctor" name="group_by_doctor" context="{'group_by': 'doctor_id'}"/>
                 </group>
             </search>
         </field>

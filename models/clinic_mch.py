@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from datetime import timedelta
 
 class ClinicMCH(models.Model):
@@ -14,6 +14,14 @@ class ClinicMCH(models.Model):
         required=True,
         ondelete='cascade'
     )
+
+    department_id = fields.Many2one(
+        'clinic.department',
+        string='Department',
+        required=True
+    )
+
+
     patient_id = fields.Many2one(
         'res.partner',
         string='Patient',
@@ -21,6 +29,8 @@ class ClinicMCH(models.Model):
         store=True,
         readonly=True
     )
+    # Doctor in charge field
+    doctor_id = fields.Many2one('hr.employee',string='Doctor In Charge',required=True,help="Select the doctor responsible for this MCH visit")
     date = fields.Date(
         string='Visit Date',
         default=fields.Date.context_today,
@@ -33,6 +43,15 @@ class ClinicMCH(models.Model):
         ('immunization', 'Immunization'),
         ('postnatal', 'Postnatal Care')
     ], string='Service Type', required=True, tracking=True)
+
+    # state
+    state = fields.Selection([
+        ('waiting', 'Waiting'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled')
+    ], string='Status', default='waiting', tracking=True, group_expand='_expand_states')
+
 
     # ========== Family Planning Fields ==========
     fp_method = fields.Selection([
@@ -143,6 +162,24 @@ class ClinicMCH(models.Model):
     next_visit = fields.Date(string='Next Appointment')
     follow_up_instructions = fields.Text(string='Follow-up Instructions')
 
+    @api.onchange('department_id')
+    def _onchange_department_id(self):
+        """Reset doctor when department changes and filter doctors"""
+        self.doctor_id = False
+        
+        # Return domain to filter employees by department
+        if self.department_id:
+            return {
+                'domain': {
+                    'doctor_id': [('department_id', '=', self.department_id.id)]
+                }
+            }
+        else:
+            return {
+                'domain': {
+                    'doctor_id': []
+                }
+            }
     @api.onchange('service_type')
     def _onchange_service_type(self):
         """Reset fields when service type changes"""
@@ -156,3 +193,25 @@ class ClinicMCH(models.Model):
         
         for field in fields_to_reset.get(self.service_type, []):
             self[field] = False
+
+    # ---------------------------
+    # State Actions Button
+    # ---------------------------
+    def _expand_states(self, states, domain, order):
+        return [key for key, val in type(self).state.selection]
+
+    def action_start(self):
+        for rec in self:
+            rec.state = 'in_progress'
+
+    def action_complete(self):
+        for rec in self:
+            rec.state = 'completed'
+
+    def action_cancel(self):
+        for rec in self:
+            rec.state = 'cancelled'
+
+    def action_reset(self):
+        for rec in self:
+            rec.state = 'waiting'
