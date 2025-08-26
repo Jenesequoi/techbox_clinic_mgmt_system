@@ -6,7 +6,7 @@ class ClinicConsultancy(models.Model):
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     name = fields.Char(string='Consultation Reference', required=True, copy=False, readonly=True, default='New')
-    patient_id = fields.Many2one('clinic.patient', string='Patient', required=True, tracking=True)
+    patient_id = fields.Many2one('res.partner', string='Patient', required=True, tracking=True)
     doctor_id = fields.Many2one('res.users', string='Doctor', required=True, tracking=True)
     date = fields.Datetime(string='Consultation Date', default=fields.Datetime.now, required=True)
     
