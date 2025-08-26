@@ -22,6 +22,7 @@
         'views/pharmacy_queue_views.xml',
         'views/pharmacy_dispense_views.xml',
         'views/clinic_department_views.xml',
+        'views/clinic_consultancy_views.xml',
         'views/menus.xml',
     ],
     'auto_install': False,
