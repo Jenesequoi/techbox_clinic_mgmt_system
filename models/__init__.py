@@ -7,4 +7,9 @@ from . import clinic_prescription
 from . import pharmacy_dispense
 from . import clinic_mch
 from . import clinic_consultancy
+<<<<<<< HEAD
 from . import laboratory_test
+=======
+from . import imaging
+from . import laboratory_test
+>>>>>>> origin/testing
