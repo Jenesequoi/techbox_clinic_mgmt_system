@@ -112,7 +112,7 @@ class ClinicImaging(models.Model):
         self.write({'status': 'cancelled'})
 
     def action_create_invoice(self):
-        """Create an invoice for the imaging study (department-based service product & price)"""
+        """Create an invoice for the imaging study and return a success notification"""
         self.ensure_one()
 
         if self.invoice_id:
@@ -121,7 +121,6 @@ class ClinicImaging(models.Model):
         if not self.patient_id:
             raise UserError(_("No patient is linked to this imaging study."))
 
-        # Get department from reception
         department = self.reception_id.department_id
         if not department:
             raise UserError(_("No department linked to this reception."))
@@ -150,12 +149,11 @@ class ClinicImaging(models.Model):
         # Link invoice back
         self.invoice_id = invoice.id
 
+        # ✅ Return success message instead of opening invoice form
         return {
-            'name': _('Customer Invoice'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'account.move',
-            'view_mode': 'form',
-            'res_id': invoice.id,
-            'view_id': False,
-            'views': [(False, 'form')],
+            'effect': {
+                'fadeout': 'slow',
+                'message': _('Invoice successfully created for %s') % self.patient_id.name,
+                'type': 'rainbow_man',
+            }
         }
